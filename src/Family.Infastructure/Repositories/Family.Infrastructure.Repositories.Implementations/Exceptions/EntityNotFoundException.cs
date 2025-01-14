@@ -1,4 +1,4 @@
-using Family.Domain.Entities.Base;
+using System;
 
 namespace Family.Infrastructure.Repositories.Implementations.Exceptions;
 

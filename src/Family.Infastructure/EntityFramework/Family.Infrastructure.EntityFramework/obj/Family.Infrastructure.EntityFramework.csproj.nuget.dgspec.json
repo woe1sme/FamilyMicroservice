@@ -4,14 +4,14 @@
     "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Infastructure\\EntityFramework\\Family.Infrastructure.EntityFramework\\Family.Infrastructure.EntityFramework.csproj": {}
   },
   "projects": {
-    "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Entities\\Family.Domain.Entities\\Family.Domain.Entities.csproj": {
+    "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Entities\\Family.Domain.Entities\\Family.Domain.Entities.csproj",
-        "projectName": "Family.Domain.Entities",
-        "projectPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Entities\\Family.Domain.Entities\\Family.Domain.Entities.csproj",
+        "projectUniqueName": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj",
+        "projectName": "Family.Domain",
+        "projectPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj",
         "packagesPath": "C:\\Users\\123\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Entities\\Family.Domain.Entities\\obj\\",
+        "outputPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\123\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -88,8 +88,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Entities\\Family.Domain.Entities\\Family.Domain.Entities.csproj": {
-                "projectPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Entities\\Family.Domain.Entities\\Family.Domain.Entities.csproj"
+              "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj": {
+                "projectPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj"
               }
             }
           }

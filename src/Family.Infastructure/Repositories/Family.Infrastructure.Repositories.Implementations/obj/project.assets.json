@@ -217,34 +217,21 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Family.Domain.Entities/1.0.0": {
+      "Family.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "compile": {
-          "bin/placeholder/Family.Domain.Entities.dll": {}
+          "bin/placeholder/Family.Domain.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Family.Domain.Entities.dll": {}
-        }
-      },
-      "Family.Domain.Repositories/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v8.0",
-        "dependencies": {
-          "Family.Domain.Entities": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/Family.Domain.Repositories.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Family.Domain.Repositories.dll": {}
+          "bin/placeholder/Family.Domain.dll": {}
         }
       },
       "Family.Infrastructure.EntityFramework/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
-          "Family.Domain.Entities": "1.0.0",
+          "Family.Domain": "1.0.0",
           "Microsoft.EntityFrameworkCore": "9.0.0"
         },
         "compile": {
@@ -624,15 +611,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Family.Domain.Entities/1.0.0": {
+    "Family.Domain/1.0.0": {
       "type": "project",
-      "path": "../../../Family.Domain/Entities/Family.Domain.Entities/Family.Domain.Entities.csproj",
-      "msbuildProject": "../../../Family.Domain/Entities/Family.Domain.Entities/Family.Domain.Entities.csproj"
-    },
-    "Family.Domain.Repositories/1.0.0": {
-      "type": "project",
-      "path": "../../../Family.Domain/Repositories/Family.Domain.Repositories/Family.Domain.Repositories.csproj",
-      "msbuildProject": "../../../Family.Domain/Repositories/Family.Domain.Repositories/Family.Domain.Repositories.csproj"
+      "path": "../../../Family.Domain/Family.Domain.csproj",
+      "msbuildProject": "../../../Family.Domain/Family.Domain.csproj"
     },
     "Family.Infrastructure.EntityFramework/1.0.0": {
       "type": "project",
@@ -642,7 +624,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "Family.Domain.Repositories >= 1.0.0",
+      "Family.Domain >= 1.0.0",
       "Family.Infrastructure.EntityFramework >= 1.0.0"
     ]
   },
@@ -673,8 +655,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Repositories\\Family.Domain.Repositories\\Family.Domain.Repositories.csproj": {
-              "projectPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Repositories\\Family.Domain.Repositories\\Family.Domain.Repositories.csproj"
+            "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj": {
+              "projectPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj"
             },
             "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Infastructure\\EntityFramework\\Family.Infrastructure.EntityFramework\\Family.Infrastructure.EntityFramework.csproj": {
               "projectPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Infastructure\\EntityFramework\\Family.Infrastructure.EntityFramework\\Family.Infrastructure.EntityFramework.csproj"

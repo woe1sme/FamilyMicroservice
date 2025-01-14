@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Family.Infrastructure.EntityFramework.Configuration;
 
 public class FamilyMemberEntityTypeConfiguration
-    : IEntityTypeConfiguration<Domain.Entities.FamilyMember>
+    : IEntityTypeConfiguration<FamilyMember>
 {
     public void Configure(EntityTypeBuilder<FamilyMember> builder)
     {

@@ -1,3 +1,5 @@
+using System;
+
 namespace Family.Infrastructure.Repositories.Implementations.Exceptions;
 
 public class FamilyNotFoundException(long id)
