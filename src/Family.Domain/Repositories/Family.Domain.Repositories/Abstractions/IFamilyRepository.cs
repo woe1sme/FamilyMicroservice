@@ -4,5 +4,5 @@ namespace Family.Domain.Repositories.Abstractions;
 
 public interface IFamilyRepository : IRepository<Family.Domain.Entities.Family>
 {
-    public Task<IEnumerable<Entities.Family>> GetAllMemberFamiliesAsync(FamilyMember member);
+    public IEnumerable<Entities.Family> GetAllMemberFamilies(FamilyMember member);
 }

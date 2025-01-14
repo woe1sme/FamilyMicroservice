@@ -11,4 +11,8 @@
       <ProjectReference Include="..\..\EntityFramework\Family.Infrastructure.EntityFramework\Family.Infrastructure.EntityFramework.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="InMemory\" />
+    </ItemGroup>
+
 </Project>

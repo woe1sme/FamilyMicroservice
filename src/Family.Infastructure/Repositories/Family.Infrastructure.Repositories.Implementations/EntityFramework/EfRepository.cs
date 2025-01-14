@@ -1,6 +1,7 @@
 using Family.Domain.Entities.Base;
 using Family.Domain.Repositories.Abstractions;
 using Family.Infrastructure.EntityFramework;
+using Family.Infrastructure.Repositories.Implementations.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Family.Infrastructure.Repositories.Implementations.EntityFramework;
@@ -12,7 +13,7 @@ public class EfRepository<TEntity>(FamilyDbContext context) : IRepository<TEntit
         return await context.Set<TEntity>().FindAsync(id);
     }
     
-    public async Task<IQueryable<TEntity>> GetAllAsync()
+    public IQueryable<TEntity> GetAll()
     {
         return context.Set<TEntity>().AsQueryable();
     }
@@ -41,8 +42,8 @@ public class EfRepository<TEntity>(FamilyDbContext context) : IRepository<TEntit
     public async Task DeleteAsync(long id)
     {
         var entity = await GetByIdAsync(id);
-        if(entity == null)
-            return;
+        if (entity == null)
+            throw new EntityNotFoundException(id);
         await DeleteAsync(entity);
     }
 }

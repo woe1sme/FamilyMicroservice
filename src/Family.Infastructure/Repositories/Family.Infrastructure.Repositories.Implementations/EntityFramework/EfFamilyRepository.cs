@@ -6,8 +6,8 @@ namespace Family.Infrastructure.Repositories.Implementations.EntityFramework;
 
 public class EfFamilyRepository(FamilyDbContext context) : EfRepository<Domain.Entities.Family>(context), IFamilyRepository
 {
-    public async Task<IEnumerable<Domain.Entities.Family>> GetAllMemberFamiliesAsync(FamilyMember member)
+    public IEnumerable<Domain.Entities.Family> GetAllMemberFamilies(FamilyMember member)
     {
-        throw new NotImplementedException();
+        return context.Family.Where(f => f.FamilyMembers.Contains(member)).AsEnumerable();
     }
 }
