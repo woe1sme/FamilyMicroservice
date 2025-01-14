@@ -1,13 +1,18 @@
-using Family.Domain.Entities;
-using Family.Domain.Repositories.Abstractions;
 using Family.Infrastructure.EntityFramework;
 
 namespace Family.Infrastructure.Repositories.Implementations.EntityFramework;
 
 public class EfFamilyRepository(FamilyDbContext context) : EfRepository<Domain.Entities.Family>(context), IFamilyRepository
 {
-    public IEnumerable<Domain.Entities.Family> GetAllMemberFamilies(FamilyMember member)
+    private readonly FamilyDbContext _context = context;
+
+    public IEnumerable<Domain.Entities.Family?> GetAllMemberFamilies(FamilyMember member)
     {
-        return context.Family.Where(f => f.FamilyMembers.Contains(member)).AsEnumerable();
+        return _context.Family.Where(f => f.FamilyMembers.Contains(member)).AsEnumerable();
+    }
+
+    public async Task<Domain.Entities.Family?> GetMemberFamilyAsync(FamilyMember member)
+    {
+        return await _context.Family.FindAsync(member.FamilyId);
     }
 }

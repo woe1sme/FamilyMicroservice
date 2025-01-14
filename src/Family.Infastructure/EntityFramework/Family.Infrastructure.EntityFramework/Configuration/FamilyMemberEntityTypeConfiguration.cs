@@ -12,7 +12,7 @@ public class FamilyMemberEntityTypeConfiguration
         builder.Property("Name")
             .IsRequired()
             .HasMaxLength(200);
-        
-        //TODO configure
+        builder.HasKey("Id");
+        builder.Property("Role").IsRequired();
     }
 }

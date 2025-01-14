@@ -4,7 +4,7 @@ namespace Family.Domain.Entities.Base;
 
 public abstract class Entity(long id): IEquatable<Entity>
 {
-    public long Id { get; protected set; } = id;
+    public long Id { get; init; } = id;
     
     public override string ToString() => Id.ToString();
 

@@ -7,23 +7,19 @@ namespace Family.Domain.Entities;
 public class FamilyMember(long id) : Entity(id), IRoleBearer
 {
     public required string Name { get; init; }
-    
     public Role Role { get; private set; }
+    public long FamilyId { get; init; }
+    public Family Family { get; set; }
+
+    public FamilyMember(long id, string name, long familyId, Role role) : this(id)
+    {
+        FamilyId = familyId;
+        Role = role;
+        Name = name;
+    }
 
     public bool IsPermissible(Permissions permission) => ((IRoleBearer)this).IsPermissible(permission);
     
-    public Family Family { get; private set; }
-
-    public FamilyMember(long id, string name, Family family, Role role) : this(id)
-    {
-        Family = family;
-        Role = role;
-        Name = name;
-        
-        if(!family.FamilyMembers.Contains(this))
-            family.AddFamilyMember(this);
-    }
-
     /// <summary>
     /// Include FamilyMember to a Family
     /// </summary>
