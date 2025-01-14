@@ -13,3 +13,4 @@ C:\Users\123\RiderProjects\FamilyMicroservice\src\Family.Domain\Repositories\Fam
 C:\Users\123\RiderProjects\FamilyMicroservice\src\Family.Domain\Repositories\Family.Domain.Repositories\obj\Debug\net8.0\refint\Family.Domain.Repositories.dll
 C:\Users\123\RiderProjects\FamilyMicroservice\src\Family.Domain\Repositories\Family.Domain.Repositories\obj\Debug\net8.0\Family.Domain.Repositories.pdb
 C:\Users\123\RiderProjects\FamilyMicroservice\src\Family.Domain\Repositories\Family.Domain.Repositories\obj\Debug\net8.0\ref\Family.Domain.Repositories.dll
+C:\Users\123\RiderProjects\FamilyMicroservice\src\Family.Domain\Repositories\Family.Domain.Repositories\obj\Debug\net8.0\Family.Domain.Repositories.sourcelink.json

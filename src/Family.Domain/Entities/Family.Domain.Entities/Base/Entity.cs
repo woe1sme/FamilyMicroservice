@@ -12,7 +12,7 @@ public abstract class Entity(long id): IEquatable<Entity>
     
     public bool Equals(Entity? other) => other is not null && Id.Equals(other.Id);
     
-    public static bool operator ==(Entity left, Entity right)
+    public static bool operator ==(Entity? left, Entity right)
     {
         if(ReferenceEquals(left, right)) 
             return true;
