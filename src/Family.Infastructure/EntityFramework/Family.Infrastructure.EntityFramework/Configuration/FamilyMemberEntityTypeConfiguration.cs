@@ -9,10 +9,11 @@ public class FamilyMemberEntityTypeConfiguration
 {
     public void Configure(EntityTypeBuilder<FamilyMember> builder)
     {
-        builder.Property("Name")
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Name)
             .IsRequired()
             .HasMaxLength(200);
-        builder.HasKey("Id");
         builder.Property("Role").IsRequired();
     }
 }

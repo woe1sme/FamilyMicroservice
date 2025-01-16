@@ -8,8 +8,9 @@ public class FamilyEntityTypeConfiguration
 {
     public void Configure(EntityTypeBuilder<Domain.Entities.Family> builder)
     {
-        builder.HasKey("Id");
-        builder.Property("FamilyName")
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.FamilyName)
             .IsRequired()
             .HasMaxLength(200);
         builder.HasMany(f => f.FamilyMembers)
