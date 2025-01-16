@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family.Infrastructure.Entit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family.Infrastructure.Repositories.Implementations", "src\Family.Infastructure\Repositories\Family.Infrastructure.Repositories.Implementations\Family.Infrastructure.Repositories.Implementations.csproj", "{EBC0C52F-600D-4898-A960-D3D5217C1FAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family.Application", "Family.Application\Family.Application.csproj", "{AB71D940-0441-42DA-B253-A4E7B4C97953}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family.Application", "src\Family.Application\Family.Application.csproj", "{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,9 +24,9 @@ Global
 		{EBC0C52F-600D-4898-A960-D3D5217C1FAB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB71D940-0441-42DA-B253-A4E7B4C97953}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB71D940-0441-42DA-B253-A4E7B4C97953}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB71D940-0441-42DA-B253-A4E7B4C97953}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB71D940-0441-42DA-B253-A4E7B4C97953}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
