@@ -3,11 +3,9 @@ using Family.Application.Models.FamilyMember;
 
 namespace Family.Application.Models.Family;
 
-public record FamilyModel : IModel
+public record FamilyCreateModel : ICreateModel
 {
-    public long Id { get; init; }
-    
-    public string FamilyName { get; init; }
+    public string Name { get; init; }
 
     public IList<FamilyMemberModel> FamilyMembers { get; init; }
 }

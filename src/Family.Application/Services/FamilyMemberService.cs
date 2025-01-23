@@ -1,6 +1,8 @@
+using Family.Application.Abstractions;
+
 namespace Family.Application.Services;
 
-public class FamilyMemberService
+public class FamilyMemberService : IFamilyMemberService
 {
     
 }

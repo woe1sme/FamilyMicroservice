@@ -2,10 +2,8 @@ using Family.Application.Models.Base;
 
 namespace Family.Application.Models.FamilyMember;
 
-public record FamilyMemberModel : IModel
+public record FamilyMemberCreateModel : ICreateModel
 {
-    public long Id { get; init; }
-    
     public string Name { get; init; }
     
     public long FamilyId { get; init; }
