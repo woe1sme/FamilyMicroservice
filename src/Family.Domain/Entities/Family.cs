@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Family.Domain.Entities.Base;
 using Family.Domain.Entities.Exceptions;
 
@@ -8,8 +7,8 @@ public class Family(long id) : Entity(id)
 {
     public string FamilyName { get; }
 
-    private readonly ICollection<FamilyMember> _familyMembers = [];
-    public ICollection<FamilyMember> FamilyMembers => _familyMembers;
+    private readonly IList<FamilyMember> _familyMembers = [];
+    public IList<FamilyMember> FamilyMembers => _familyMembers;
 
     public Family(long id, string familyName) : this(id)
     {

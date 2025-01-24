@@ -5,7 +5,7 @@ namespace Family.Application.Models.Family;
 
 public record FamilyCreateModel : ICreateModel
 {
-    public string Name { get; init; }
+    public required string FamilyName { get; init; }
 
-    public IList<FamilyMemberModel> FamilyMembers { get; init; }
+    public required IList<FamilyMemberModel> FamilyMembers { get; init; }
 }

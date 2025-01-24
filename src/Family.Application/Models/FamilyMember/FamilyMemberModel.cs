@@ -6,9 +6,9 @@ public record FamilyMemberModel : IModel
 {
     public long Id { get; init; }
     
-    public string Name { get; init; }
+    public required string Name { get; init; }
     
-    public long FamilyId { get; init; }
+    public required long FamilyId { get; init; }
     
-    public string Role { get; init; }
+    public required string Role { get; init; }
 }

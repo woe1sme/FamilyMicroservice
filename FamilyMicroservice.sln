@@ -1,12 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family.Domain", "src\Family.Domain\Family.Domain.csproj", "{00000000-0000-0000-0000-000000000000}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Family.Domain", "src\Family.Domain\Family.Domain.csproj", "{62970550-92CF-42DB-974F-91A86B29229D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family.Infrastructure.EntityFramework", "src\Family.Infastructure\EntityFramework\Family.Infrastructure.EntityFramework\Family.Infrastructure.EntityFramework.csproj", "{523B5B03-8891-4781-8317-F90AE2FA80F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Family.Infrastructure.EntityFramework", "src\Family.Infastructure\EntityFramework\Family.Infrastructure.EntityFramework\Family.Infrastructure.EntityFramework.csproj", "{523B5B03-8891-4781-8317-F90AE2FA80F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family.Infrastructure.Repositories.Implementations", "src\Family.Infastructure\Repositories\Family.Infrastructure.Repositories.Implementations\Family.Infrastructure.Repositories.Implementations.csproj", "{EBC0C52F-600D-4898-A960-D3D5217C1FAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Family.Infrastructure.Repositories.Implementations", "src\Family.Infastructure\Repositories\Family.Infrastructure.Repositories.Implementations\Family.Infrastructure.Repositories.Implementations.csproj", "{EBC0C52F-600D-4898-A960-D3D5217C1FAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family.Application", "src\Family.Application\Family.Application.csproj", "{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Family.Application", "src\Family.Application\Family.Application.csproj", "{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,6 +17,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{62970550-92CF-42DB-974F-91A86B29229D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62970550-92CF-42DB-974F-91A86B29229D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62970550-92CF-42DB-974F-91A86B29229D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62970550-92CF-42DB-974F-91A86B29229D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{523B5B03-8891-4781-8317-F90AE2FA80F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{523B5B03-8891-4781-8317-F90AE2FA80F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{523B5B03-8891-4781-8317-F90AE2FA80F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -22,11 +29,15 @@ Global
 		{EBC0C52F-600D-4898-A960-D3D5217C1FAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBC0C52F-600D-4898-A960-D3D5217C1FAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBC0C52F-600D-4898-A960-D3D5217C1FAB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34E3E997-6A0B-4189-ABB0-3C51C2C0071A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C5D850ED-5211-4604-80B0-775A27E43A43}
 	EndGlobalSection
 EndGlobal

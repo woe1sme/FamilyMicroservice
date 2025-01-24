@@ -7,7 +7,7 @@ public record FamilyModel : IModel
 {
     public long Id { get; init; }
     
-    public string FamilyName { get; init; }
+    public required string FamilyName { get; init; }
 
-    public IList<FamilyMemberModel> FamilyMembers { get; init; }
+    public required IList<FamilyMemberModel> FamilyMembers { get; init; }
 }

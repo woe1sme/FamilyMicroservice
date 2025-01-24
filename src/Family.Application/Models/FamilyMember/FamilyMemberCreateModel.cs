@@ -4,9 +4,9 @@ namespace Family.Application.Models.FamilyMember;
 
 public record FamilyMemberCreateModel : ICreateModel
 {
-    public string Name { get; init; }
+    public required string Name { get; init; }
     
-    public long FamilyId { get; init; }
+    public required long FamilyId { get; init; }
     
-    public string Role { get; init; }
+    public required string Role { get; init; }
 }
