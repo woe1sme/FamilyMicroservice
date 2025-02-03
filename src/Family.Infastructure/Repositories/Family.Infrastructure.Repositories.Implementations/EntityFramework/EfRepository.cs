@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Family.Infrastructure.Repositories.Implementations.EntityFramework;
 
-public class EfRepository<TEntity>(FamilyDbContext context) : IRepository<TEntity> where TEntity : Entity
+public class EfRepository<TEntity, TId>(FamilyDbContext context) : IRepository<TEntity, TId> where TEntity : Entity<TId> where TId : struct
 {
-    public async Task<TEntity?> GetByIdAsync(long id)
+    public async Task<TEntity?> GetByIdAsync(TId id)
     {
         return await context.Set<TEntity>().FindAsync(id);
     }
-    
+
     public IQueryable<TEntity> GetAll()
     {
         return context.Set<TEntity>().AsQueryable();
@@ -35,8 +35,8 @@ public class EfRepository<TEntity>(FamilyDbContext context) : IRepository<TEntit
         context.Set<TEntity>().Remove(entity);
         await context.SaveChangesAsync();
     }
-    
-    public async Task DeleteAsync(long id)
+
+    public async Task DeleteAsync(TId id)
     {
         var entity = await GetByIdAsync(id);
         if (entity != null)

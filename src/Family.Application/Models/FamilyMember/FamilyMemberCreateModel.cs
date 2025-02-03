@@ -6,7 +6,7 @@ public record FamilyMemberCreateModel : ICreateModel
 {
     public required string Name { get; init; }
     
-    public required long FamilyId { get; init; }
+    public required Guid FamilyId { get; init; }
     
     public required string Role { get; init; }
 }

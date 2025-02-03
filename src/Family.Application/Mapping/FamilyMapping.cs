@@ -7,16 +7,13 @@ public class FamilyMapping : Profile
 {
     public FamilyMapping()
     {
-        CreateMap<FamilyModel, Domain.Entities.Family>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
-        CreateMap<FamilyModel, Domain.Entities.Family>()
-            .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName));
-        CreateMap<FamilyModel, Domain.Entities.Family>()
+        CreateMap<Domain.Entities.Family, FamilyModel>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName))
             .ForMember(dest => dest.FamilyMembers, opt => opt.MapFrom(src => src.FamilyMembers));
 
-        CreateMap<Domain.Entities.Family, FamilyCreateModel>()
+        CreateMap<FamilyCreateModel, Domain.Entities.Family>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
             .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName));
-        CreateMap<Domain.Entities.Family, FamilyCreateModel>()
-            .ForMember(dest => dest.FamilyMembers, opt => opt.MapFrom(src => src.FamilyMembers));
     }
 }

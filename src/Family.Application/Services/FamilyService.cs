@@ -1,30 +1,73 @@
 using AutoMapper;
 using Family.Application.Abstractions;
+using Family.Application.Exceptions;
 using Family.Application.Models.Family;
-using Family.Application.Models.FamilyMember;
-using Family.Application.Models.UserInfo;
+using Family.Domain.Entities;
+using Family.Domain.Entities.Enums;
 using Family.Domain.Repositories.Abstractions;
 
 namespace Family.Application.Services;
 
-public class FamilyService : IFamilyService
+public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper) : IFamilyService
 {
-    private IFamilyRepository _familyRepository;
-    private IFamilyMemberService _familyMemberService;
-
-    public async Task<FamilyCreateModel> CreateFamilyAsync(UserInfoModel userInfo, string FamilyName)
+    public async Task<FamilyModel> CreateFamilyAsync(UserInfo userInfo, string familyName)
     {
-
-        var familyHeadModel = await _familyMemberService.CreateFamilyMemberAsync(userInfo.UserName);
-         
-        var family = new FamilyCreateModel
+        await unitOfWork.BeginTransactionAsync();
+        
+        try
         {
-            FamilyName = FamilyName,
-            FamilyMembers = new List<FamilyMemberModel>()
-        };
+            var family = new Domain.Entities.Family(familyName);
+            var familyHead = new FamilyMember(userInfo.UserName, family.Id, Role.Head);
+            family.FamilyMembers.Add(familyHead);
+            
+            await unitOfWork.FamilyRepository.AddAsync(family);
+            await unitOfWork.FamilyMemberRepository.AddAsync(familyHead);
+            
+            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.CommitTransactionAsync();
+            
+            return mapper.Map<FamilyModel>(family);
+        }
+        catch (Exception ex)
+        {
+            await unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
+    }
 
-        family.FamilyMembers.Add(familyHeadModel);
+    public async Task<FamilyModel> GetFamilyByIdAsync(Guid familyId)
+    {
+        var family = await unitOfWork.FamilyRepository.GetByIdAsync(familyId);
+        
+        if(family is null)
+            throw new FamilyNotFoundException(familyId);
+        
+        return mapper.Map<FamilyModel>(family);
+    }
 
-        return family;
+    public async Task<FamilyModel> UpdateFamilyAsync(FamilyUpdateModel familyUpdateModel)
+    {
+        var family = await unitOfWork.FamilyRepository.GetByIdAsync(familyUpdateModel.Id);
+        
+        if(family is null)
+            throw new FamilyNotFoundException(familyUpdateModel.Id);
+
+        await unitOfWork.BeginTransactionAsync();
+        
+        try
+        {
+            family.FamilyName = familyUpdateModel.Name;
+            await unitOfWork.FamilyRepository.UpdateAsync(family);
+            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.CommitTransactionAsync();
+            
+            return mapper.Map<FamilyModel>(family);
+        }
+        catch (Exception ex)
+        {
+            await unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
     }
 }
+

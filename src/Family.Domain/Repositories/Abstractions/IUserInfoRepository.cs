@@ -2,7 +2,7 @@
 
 namespace Family.Domain.Repositories.Abstractions
 {
-    public interface IUserInfoRepository : IRepository<UserInfo>
+    public interface IUserInfoRepository : IRepository<UserInfo, Guid>
     {
 
     }

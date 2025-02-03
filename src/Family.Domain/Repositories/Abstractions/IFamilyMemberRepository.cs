@@ -5,7 +5,7 @@ using Family.Domain.Entities;
 
 namespace Family.Domain.Repositories.Abstractions;
 
-public interface IFamilyMemberRepository : IRepository<FamilyMember>
+public interface IFamilyMemberRepository : IRepository<FamilyMember, Guid>
 {
-    public Task<IEnumerable<FamilyMember>> GetAllMembersByFamilyIdAsync(long familyId);
+    public Task<IEnumerable<FamilyMember>> GetAllMembersByFamilyIdAsync(Guid familyId);
 }

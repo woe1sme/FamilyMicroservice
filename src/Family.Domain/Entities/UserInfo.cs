@@ -2,7 +2,7 @@
 
 namespace Family.Domain.Entities
 {
-    public class UserInfo(long id) : Entity(id)
+    public class UserInfo(Guid id) : Entity<Guid>(id)
     {
         public string UserName { get; set; }
     }

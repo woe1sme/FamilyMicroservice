@@ -4,7 +4,7 @@ using Family.Domain.Entities;
 
 namespace Family.Domain.Repositories.Abstractions;
 
-public interface IFamilyRepository : IRepository<Entities.Family>
+public interface IFamilyRepository : IRepository<Entities.Family, Guid>
 {
     public Task<Entities.Family?> GetMemberFamilyAsync(FamilyMember member);
 }

@@ -2,7 +2,7 @@ using Family.Infrastructure.EntityFramework;
 
 namespace Family.Infrastructure.Repositories.Implementations.EntityFramework;
 
-public class EfFamilyRepository(FamilyDbContext context) : EfRepository<Domain.Entities.Family>(context), IFamilyRepository
+public class EfFamilyRepository(FamilyDbContext context) : EfRepository<Domain.Entities.Family, Guid>(context), IFamilyRepository
 {
     private readonly FamilyDbContext _context = context;
 

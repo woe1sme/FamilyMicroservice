@@ -4,20 +4,23 @@ using Family.Domain.Entities.Exceptions;
 
 namespace Family.Domain.Entities;
 
-public class FamilyMember(long id) : Entity(id), IRoleBearer
+public class FamilyMember(Guid id) : Entity<Guid>(id), IRoleBearer
 {
-    public required string Name { get; init; }
+    public string Name { get; init; }
     public Role Role { get; private set; }
-    public long FamilyId { get; init; }
+    public Guid FamilyId { get; init; }
     public Family Family { get; set; }
+    
+    public Guid UserId { get; init; }
 
-    public FamilyMember(long id, string name, long familyId, Role role) : this(id)
+    public FamilyMember(string name, Guid familyId, Role role) : this(Guid.NewGuid())
     {
         FamilyId = familyId;
         Role = role;
         Name = name;
     }
 
+    /*
     public bool IsPermissible(Permissions permission) => ((IRoleBearer)this).IsPermissible(permission);
     
     /// <summary>
@@ -58,5 +61,5 @@ public class FamilyMember(long id) : Entity(id), IRoleBearer
             member.Role = role;
         else
             throw new NoPermissionToChangeMemberRoleException(this);
-    }
+    }*/
 }
