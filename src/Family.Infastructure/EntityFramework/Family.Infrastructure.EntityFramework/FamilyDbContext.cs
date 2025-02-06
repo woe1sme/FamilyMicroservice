@@ -7,6 +7,8 @@ public sealed class FamilyDbContext : DbContext
 {
     public DbSet<Domain.Entities.Family> Family { get; set; }
     public DbSet<FamilyMember> FamilyMember { get; set; }
+    
+    public DbSet<UserInfo> UserInfo { get; set; }
 
     public FamilyDbContext(DbContextOptions<FamilyDbContext> options)
     {

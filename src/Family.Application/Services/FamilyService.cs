@@ -2,20 +2,30 @@ using AutoMapper;
 using Family.Application.Abstractions;
 using Family.Application.Exceptions;
 using Family.Application.Models.Family;
+using Family.Application.Models.UserInfo;
 using Family.Domain.Entities;
 using Family.Domain.Entities.Enums;
 using Family.Domain.Repositories.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace Family.Application.Services;
 
-public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper) : IFamilyService
+public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyService> logger) : IFamilyService
 {
-    public async Task<FamilyModel> CreateFamilyAsync(UserInfo userInfo, string familyName)
+    public async Task<FamilyModel> CreateFamilyAsync(UserInfoModel userInfo, string familyName)
     {
         await unitOfWork.BeginTransactionAsync();
         
         try
         {
+            var userInfoData = await unitOfWork.UserInfoRepository.GetByIdAsync(userInfo.Id);
+        
+            if (userInfoData is null)
+            {
+                await unitOfWork.UserInfoRepository.AddAsync(mapper.Map<UserInfo>(userInfo));
+                logger.LogInformation($"UserInfo {userInfo.Id}, {userInfo.UserName} has been created.");
+            }
+            
             var family = new Domain.Entities.Family(familyName);
             var familyHead = new FamilyMember(userInfo.UserName, family.Id, Role.Head);
             family.FamilyMembers.Add(familyHead);
@@ -31,6 +41,7 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper) : IFamilyServ
         catch (Exception ex)
         {
             await unitOfWork.RollbackTransactionAsync();
+            logger.LogError(ex, "Failed to create family");
             throw;
         }
     }
@@ -38,10 +49,13 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper) : IFamilyServ
     public async Task<FamilyModel> GetFamilyByIdAsync(Guid familyId)
     {
         var family = await unitOfWork.FamilyRepository.GetByIdAsync(familyId);
-        
-        if(family is null)
+
+        if (family is null)
+        {
+            logger.LogError("Family not found");
             throw new FamilyNotFoundException(familyId);
-        
+        }
+
         return mapper.Map<FamilyModel>(family);
     }
 
@@ -50,7 +64,10 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper) : IFamilyServ
         var family = await unitOfWork.FamilyRepository.GetByIdAsync(familyUpdateModel.Id);
         
         if(family is null)
+        {
+            logger.LogError("Failed to update family. Family to update not found");
             throw new FamilyNotFoundException(familyUpdateModel.Id);
+        }
 
         await unitOfWork.BeginTransactionAsync();
         
@@ -66,8 +83,33 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper) : IFamilyServ
         catch (Exception ex)
         {
             await unitOfWork.RollbackTransactionAsync();
+            logger.LogError(ex, "Failed to update family");
+            throw;
+        }
+    }
+
+    public IEnumerable<FamilyModel> GetFamilyByUserInfo(UserInfoModel userInfo)
+    {
+        if (userInfo is null)
+        {
+            logger.LogInformation("User is null");
+            throw new ArgumentNullException(nameof(userInfo));
+        }
+
+        try
+        {
+            var familyMembers = unitOfWork.FamilyMemberRepository.GetAll().Where(fm => fm.UserId == userInfo.Id);
+            var families = unitOfWork.FamilyRepository.GetAll()
+                .Where(f => familyMembers
+                    .Any(fm => f.FamilyMembers
+                        .Contains(fm)));
+            
+            return mapper.Map<IEnumerable<FamilyModel>>(families);
+        } 
+        catch(Exception ex)
+        {
+            logger.LogError(ex, "Failed to get families");
             throw;
         }
     }
 }
-

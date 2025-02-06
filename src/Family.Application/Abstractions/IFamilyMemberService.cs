@@ -8,5 +8,7 @@ public interface IFamilyMemberService
     public Task<FamilyMemberModel> AddMemberToFamilyAsync(FamilyMemberCreateModel familyMemberCreateModel, UserInfoModel userInfo, Guid familyId);
     public Task RemoveMemberFromFamilyAsync(FamilyMemberModel familyMember, Guid familyId);
     public Task<FamilyMemberModel> UpdateMemberAsync(FamilyMemberUpdateModel familyMemberUpdateModel);
-    public Task<IEnumerable<FamilyMemberModel>> GetAllMembersAsync(Guid familyId);
+    public Task<IEnumerable<FamilyMemberModel>> GetAllMembersByFamilyIdAsync(Guid familyId);
+    public Task<FamilyMemberModel> GetMemberByIdAsync(Guid memberId);
+    public IEnumerable<FamilyMemberModel> GetFamilyMemberByUserInfo(UserInfoModel userInfo);
 }

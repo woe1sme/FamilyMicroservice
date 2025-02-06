@@ -14,18 +14,4 @@ public class Family(Guid id) : Entity<Guid>(id)
     {
         FamilyName = familyName;
     }
-
-    public void AddFamilyMember(FamilyMember familyMember)
-    {
-        if(FamilyMembers.Contains(familyMember))
-            throw new MemberAlreadyExistException(this, familyMember);
-        _familyMembers.Add(familyMember);
-    }
-
-    public void RemoveFamilyMember(FamilyMember familyMember)
-    {
-        if(!FamilyMembers.Contains(familyMember))
-            throw new NoSuchMemberInFamilyException(this, familyMember);
-        _familyMembers.Remove(familyMember);
-    }
 }

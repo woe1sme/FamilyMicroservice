@@ -9,7 +9,6 @@ public class FamilyEntityTypeConfiguration
     public void Configure(EntityTypeBuilder<Domain.Entities.Family> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
         builder.Property(x => x.FamilyName)
             .IsRequired()
             .HasMaxLength(200);

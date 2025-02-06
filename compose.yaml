@@ -1,0 +1,6 @@
+﻿services:
+  family.api:
+    image: family.api
+    build:
+      context: .
+      dockerfile: src/Family.API/Dockerfile
