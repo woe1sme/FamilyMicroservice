@@ -151,4 +151,18 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
             throw;
         }
     }
+
+    public async Task<FamilyMemberModel> GetFamilyMemberByUserIdAsync(Guid userInfoId, Guid familyId)
+    {
+        var family = await unitOfWork.FamilyRepository.GetByIdAsync(familyId);
+
+        if (family is null)
+        {
+            logger.LogError($"Family with id: {familyId} not found");
+            throw new FamilyNotFoundException(familyId);
+        }
+        
+        return mapper.Map<FamilyMemberModel>(
+            await unitOfWork.FamilyMemberRepository.GetFamilyMemberByUserIdAsync(userInfoId, familyId));
+    }
 }

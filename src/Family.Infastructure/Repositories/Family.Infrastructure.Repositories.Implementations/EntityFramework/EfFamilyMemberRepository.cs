@@ -1,4 +1,5 @@
 using Family.Infrastructure.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 namespace Family.Infrastructure.Repositories.Implementations.EntityFramework;
 
@@ -9,7 +10,14 @@ public class EfFamilyMemberRepository(FamilyDbContext context) : EfRepository<Fa
     public async Task<IEnumerable<FamilyMember>> GetAllMembersByFamilyIdAsync(Guid familyId)
     {
         var family = await _context.Family.FindAsync(familyId);
-        return family == null ? new List<FamilyMember>() : family.FamilyMembers;
+        return family is null ? new List<FamilyMember>() : family.FamilyMembers;
+    }
+
+    public async Task<FamilyMember> GetFamilyMemberByUserIdAsync(Guid userInfoId, Guid familyId)
+    {
+        return await _context.FamilyMember
+            .Where(fm => fm.FamilyId == familyId && fm.UserId == userInfoId)
+            .FirstOrDefaultAsync();
     }
 
     public IEnumerable<FamilyMember> GetAllFamilyMembersAsync(Domain.Entities.Family family)

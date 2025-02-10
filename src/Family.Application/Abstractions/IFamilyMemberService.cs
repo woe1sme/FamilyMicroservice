@@ -11,4 +11,5 @@ public interface IFamilyMemberService
     public Task<IEnumerable<FamilyMemberModel>> GetAllMembersByFamilyIdAsync(Guid familyId);
     public Task<FamilyMemberModel> GetMemberByIdAsync(Guid memberId);
     public IEnumerable<FamilyMemberModel> GetFamilyMemberByUserInfo(UserInfoModel userInfo);
+    public Task<FamilyMemberModel> GetFamilyMemberByUserIdAsync(Guid userInfoId, Guid familyId);
 }
