@@ -5,8 +5,9 @@ namespace Family.Application.Abstractions;
 
 public interface IFamilyService
 {
-    public Task<FamilyModel> CreateFamilyAsync(UserInfoModel userInfo, string familyName);
+    public Task<FamilyModel> CreateFamilyAsync(FamilyCreateModel family, UserInfoModel userInfo);
     public Task<FamilyModel> GetFamilyByIdAsync(Guid familyId);
     public Task<FamilyModel> UpdateFamilyAsync(FamilyUpdateModel familyUpdateModel);
     public IEnumerable<FamilyModel> GetFamilyByUserInfo(UserInfoModel userInfo);
+    public IEnumerable<FamilyModel> GetAll();
 }

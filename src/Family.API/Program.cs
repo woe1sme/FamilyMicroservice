@@ -5,6 +5,9 @@ using Family.Domain.Repositories.Abstractions;
 using Family.Infrastructure.EntityFramework;
 using Family.Infrastructure.Repositories.Implementations.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using Family.Application.Validation;
+using Family.Application.Models.Family;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,11 @@ builder.Services.AddScoped<IUserInfoRepository, EfUserInfoRepository>();
 builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 builder.Services.AddScoped<IFamilyService, FamilyService>();
 builder.Services.AddScoped<IFamilyMemberService, FamilyMemberService>();
+
+//controllers and validator
+builder.Services.AddControllers();
+builder.Services.AddScoped<IValidator<FamilyCreateModel>, FamilyCreateModelValidator>();
+builder.Services.AddScoped<IValidator<FamilyUpdateModel>, FamilyUpdateModelValidator>();
 
 var app = builder.Build();
 

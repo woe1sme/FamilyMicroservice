@@ -11,6 +11,6 @@ public class UserInfoEntityTypeConfiguration : IEntityTypeConfiguration<UserInfo
         builder.HasKey(x => x.Id);
         builder.Property(x => x.UserName)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasMaxLength(100);
     }
 }

@@ -11,7 +11,7 @@ public class FamilyEntityTypeConfiguration
         builder.HasKey(x => x.Id);
         builder.Property(x => x.FamilyName)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasMaxLength(100);
         builder.HasMany(f => f.FamilyMembers)
             .WithOne(fm => fm.Family)
             .HasForeignKey(fm => fm.FamilyId);

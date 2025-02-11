@@ -5,5 +5,6 @@ namespace Family.Application.Models.Family;
 
 public record FamilyCreateModel : ICreateModel
 {
-    public required string FamilyName { get; init; }
+
+    public string FamilyName { get; init; }
 }

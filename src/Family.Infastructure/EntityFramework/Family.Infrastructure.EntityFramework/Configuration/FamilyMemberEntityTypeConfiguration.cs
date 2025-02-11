@@ -12,7 +12,7 @@ public class FamilyMemberEntityTypeConfiguration
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Name)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasMaxLength(100);
         builder.Property("Role").IsRequired();
     }
 }

@@ -12,22 +12,22 @@ namespace Family.Application.Services;
 
 public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyService> logger) : IFamilyService
 {
-    public async Task<FamilyModel> CreateFamilyAsync(UserInfoModel userInfo, string familyName)
+    public async Task<FamilyModel> CreateFamilyAsync(FamilyCreateModel familyCreateModel, UserInfoModel userInfoModel)
     {
         await unitOfWork.BeginTransactionAsync();
         
         try
         {
-            var userInfoData = await unitOfWork.UserInfoRepository.GetByIdAsync(userInfo.Id);
+            var userInfoData = await unitOfWork.UserInfoRepository.GetByIdAsync(userInfoModel.Id);
         
             if (userInfoData is null)
             {
-                await unitOfWork.UserInfoRepository.AddAsync(mapper.Map<UserInfo>(userInfo));
-                logger.LogInformation($"UserInfo {userInfo.Id}, {userInfo.UserName} has been created.");
+                await unitOfWork.UserInfoRepository.AddAsync(mapper.Map<UserInfo>(userInfoModel));
+                logger.LogInformation($"UserInfo {userInfoModel.Id}, {userInfoModel.UserName} has been created.");
             }
             
-            var family = new Domain.Entities.Family(familyName);
-            var familyHead = new FamilyMember(userInfo.UserName, family.Id, Role.Head);
+            var family = new Domain.Entities.Family(familyCreateModel.FamilyName);
+            var familyHead = new FamilyMember(userInfoModel.UserName, family.Id, Role.Head);
             family.FamilyMembers.Add(familyHead);
             
             await unitOfWork.FamilyRepository.AddAsync(family);
@@ -73,7 +73,7 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<Famil
         
         try
         {
-            family.FamilyName = familyUpdateModel.Name;
+            family.FamilyName = familyUpdateModel.FamilyName;
             await unitOfWork.FamilyRepository.UpdateAsync(family);
             await unitOfWork.SaveChangesAsync();
             await unitOfWork.CommitTransactionAsync();
@@ -111,5 +111,10 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<Famil
             logger.LogError(ex, "Failed to get families");
             throw;
         }
+    }
+
+    public IEnumerable<FamilyModel> GetAll()
+    {
+        return mapper.Map<IEnumerable<FamilyModel>>(unitOfWork.FamilyRepository.GetAll());
     }
 }
