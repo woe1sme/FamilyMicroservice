@@ -8,14 +8,8 @@ using System.Threading.Tasks;
 
 namespace Family.Application.Validation
 {
-    public class FamilyCreateModelValidator : AbstractValidator<FamilyCreateModel>
+    public class FamilyCreateModelValidator : FamilyValidator<FamilyCreateModel>
     {
-        public FamilyCreateModelValidator()
-        {
-            RuleFor(x => x.FamilyName).NotEmpty()
-                                      .WithMessage("Specify family Name.")
-                                      .Length(1, 100)
-                                      .WithMessage("Not greater than 100");
-        }
+        
     }
 }

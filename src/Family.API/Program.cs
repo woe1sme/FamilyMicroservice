@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using Family.Application.Validation;
 using Family.Application.Models.Family;
+using Family.API.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,9 @@ builder.Logging.AddDebug();
 builder.Services.AddAutoMapper(typeof(FamilyMemberMapping), typeof(FamilyMapping), typeof(UserInfoMapping));
 
 //services and dbContext
-builder.Services.AddDbContext<FamilyDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<FamilyDbContext>(options =>
+    options.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING")
+                      ?? builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IFamilyRepository, EfFamilyRepository>();
 builder.Services.AddScoped<IFamilyMemberRepository, EfFamilyMemberRepository>();
@@ -41,6 +44,9 @@ builder.Services.AddScoped<IValidator<FamilyUpdateModel>, FamilyUpdateModelValid
 
 var app = builder.Build();
 
+// ѕрименение миграций при запуске приложени€
+app.MigrateDatabase();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -49,5 +55,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.MapControllers();
 app.Run();

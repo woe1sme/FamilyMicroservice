@@ -3,8 +3,7 @@ using Family.Application.Models.FamilyMember;
 
 namespace Family.Application.Models.Family;
 
-public record FamilyCreateModel : ICreateModel
+public record FamilyCreateModel(string familyName) : FamilyModelBase(familyName), ICreateModel
 {
-
-    public string FamilyName { get; init; }
+    
 }

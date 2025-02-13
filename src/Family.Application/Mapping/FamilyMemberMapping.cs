@@ -24,7 +24,7 @@ namespace Family.Application.Mapping
             
             CreateMap<FamilyMemberUpdateModel, FamilyMember>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.FamilyName))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => Enum.Parse(typeof(Role), src.Role)))
                 .ForMember(dest => dest.FamilyId, opt => opt.MapFrom(src => src.FamilyId));
 

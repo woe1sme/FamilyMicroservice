@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Family.Domain\Family.Domain.csproj" />
+      <ProjectReference Include="..\Family.Infastructure\EntityFramework\Family.Infrastructure.EntityFramework\Family.Infrastructure.EntityFramework.csproj" />
     </ItemGroup>
 
     <ItemGroup>

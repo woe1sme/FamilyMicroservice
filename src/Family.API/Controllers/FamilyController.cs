@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Family.API.Controllers
 {
     [ApiController]
-    public class FamilyController(IFamilyService familyService, ILogger logger) : Controller
+    public class FamilyController(IFamilyService familyService/*, ILogger logger*/) : Controller
     {
         [HttpGet("{familyId:guid}")]
         public async Task<IActionResult> GetFamily(Guid familyId)
@@ -20,7 +20,6 @@ namespace Family.API.Controllers
         }
 
         [HttpGet]
-        [AuthorizeFamilyMember(Role.Child)]
         public IActionResult GetFamily([FromBody] UserInfoModel userInfoModel) 
         {
             if (!ModelState.IsValid)
@@ -52,7 +51,7 @@ namespace Family.API.Controllers
         }
 
         [HttpPatch]
-        [AuthorizeFamilyMember(Role.Head)]
+        //[AuthorizeFamilyMember(Role.Head)]
         public async Task<IActionResult> UpdateFamily([FromBody] FamilyUpdateModel familyUpdateModel) 
         {
             if (!ModelState.IsValid)

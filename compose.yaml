@@ -1,6 +1,37 @@
-﻿services:
-  family.api:
-    image: family.api
+﻿version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=FamilyDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  family-api:
     build:
       context: .
       dockerfile: src/Family.API/Dockerfile
+    container_name: family-api
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CONNECTION_STRING=Host=postgres;Port=5432;Database=FamilyDb;Username=postgres;Password=postgres
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+
+volumes:
+  pgdata:
+
+networks:
+  app-network:

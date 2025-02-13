@@ -10,9 +10,9 @@ public sealed class FamilyDbContext : DbContext
     
     public DbSet<UserInfo> UserInfo { get; set; }
 
-    public FamilyDbContext(DbContextOptions<FamilyDbContext> options)
+    public FamilyDbContext(DbContextOptions<FamilyDbContext> options) : base(options)
     {
-        //Database.EnsureCreated();
+        Database.EnsureCreated();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
