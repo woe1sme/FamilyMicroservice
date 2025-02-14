@@ -1,67 +1,140 @@
 ﻿using Family.Application.Abstractions;
-using Family.Application.Attributes;
 using Family.Application.Models.Family;
 using Family.Application.Models.UserInfo;
+using Family.Domain.Entities;
 using Family.Domain.Entities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Family.API.Controllers
 {
     [ApiController]
-    public class FamilyController(IFamilyService familyService/*, ILogger logger*/) : Controller
+    [Route("api/[controller]")]
+    public class FamilyController : ControllerBase
     {
+        private readonly IFamilyService _familyService;
+        private readonly ILogger _logger;
+
+        public FamilyController(IFamilyService familyService, ILogger<FamilyController> logger)
+        {
+            _familyService = familyService;
+            _logger = logger;
+        }
+
+        // GET api/family/{familyId}
         [HttpGet("{familyId:guid}")]
-        public async Task<IActionResult> GetFamily(Guid familyId)
+        public async Task<IActionResult> GetFamilyById(Guid familyId)
         {
-            var family = await familyService.GetFamilyByIdAsync(familyId);
-
-            return family == null ? NotFound() : Ok(family);
-        }
-
-        [HttpGet]
-        public IActionResult GetFamily([FromBody] UserInfoModel userInfoModel) 
-        {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var family = await _familyService.GetFamilyByIdAsync(familyId);
+                return family == null ? NotFound() : Ok(family);
             }
-
-            var userFamilies = familyService.GetFamilyByUserInfo(userInfoModel);
-
-            return !userFamilies.Any() ? NotFound() : Ok(userFamilies);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting family with ID {FamilyId}", familyId);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
-        [HttpGet]
-        public IActionResult GetFamily() 
+        // GET /api/users/{userId}/families
+        [HttpGet("~/api/users/{userId:guid}/families")]
+        public IActionResult GetFamiliesByUserId(Guid userId)
         {
-            return Ok(familyService.GetAll());
+            try
+            {
+                var userFamilies = _familyService.GetFamilyByUserId(userId);
+
+                return !userFamilies.Any() ? NotFound() : Ok(userFamilies);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting family by UserId {userId}", userId);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
+        // GET api/family
+        [HttpGet]
+        public IActionResult GetAllFamilies()
+        {
+            try
+            {
+                return Ok(_familyService.GetAll());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting families");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
+        // POST /api/families
         [HttpPost]
-        public async Task<IActionResult> CreateFamily([FromBody] FamilyCreateModel familyCreateModel, [FromBody] UserInfoModel userInfoModel) 
+        //[Authorize]
+        public async Task<IActionResult> CreateFamily([FromBody] FamilyCreateModel familyCreateModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
+                // Получаем идентификатор пользователя из Claims
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+                {
+                    return Unauthorized();
+                }
 
-            var family = await familyService.CreateFamilyAsync(familyCreateModel, userInfoModel);
-            return CreatedAtAction(nameof(CreateFamily), new { id = family.Id }, family);
+                var family = await _familyService.CreateFamilyAsync(familyCreateModel);
+                return CreatedAtAction(nameof(CreateFamily), new { id = family.Id }, family);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating family");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
-        [HttpPatch]
-        //[AuthorizeFamilyMember(Role.Head)]
-        public async Task<IActionResult> UpdateFamily([FromBody] FamilyUpdateModel familyUpdateModel) 
+        [HttpPatch("{familyId:guid}")]
+        public async Task<IActionResult> UpdateFamily(Guid familyId, [FromBody] FamilyUpdateModel familyUpdateModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                await _familyService.UpdateFamilyAsync(familyId, familyUpdateModel);
+                return NoContent();
             }
-
-            await familyService.UpdateFamilyAsync(familyUpdateModel);
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating family {familyId}", familyId);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
+        //временный метод получения токена тестового пользователя
+        //[HttpGet("~/api/token")]
+        //public IActionResult GetToken()
+        //{
+        //    var claims = new List<Claim>
+        //    {
+        //        new Claim(ClaimTypes.NameIdentifier, "b5bb7427-5922-4262-9cd4-0758d87bc1d2"),
+        //        new Claim(ClaimTypes.Name, "TestUserName")
+        //    };
+
+        //    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("aUYNC5NmUzAXKvAGREGbiNkjPG7p3QbT"));
+        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        //    var token = new JwtSecurityToken(
+        //        issuer: "family-issuer",
+        //        audience: "family-audience",
+        //        claims: claims,
+        //        expires: DateTime.UtcNow.AddHours(24),
+        //        signingCredentials: creds
+        //    );
+
+        //    return Ok( new JwtSecurityTokenHandler().WriteToken(token));
+        //}
     }
 }

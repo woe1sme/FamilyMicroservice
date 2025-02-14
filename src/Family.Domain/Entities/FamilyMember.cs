@@ -4,7 +4,7 @@ using Family.Domain.Entities.Exceptions;
 
 namespace Family.Domain.Entities;
 
-public class FamilyMember(Guid id) : Entity<Guid>(id), IRoleBearer
+public class FamilyMember(Guid id) : Entity<Guid>(id)
 {
     public string Name { get; init; }
     public Role Role { get; private set; }

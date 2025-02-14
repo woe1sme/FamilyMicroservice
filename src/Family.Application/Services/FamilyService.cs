@@ -10,23 +10,25 @@ using Microsoft.Extensions.Logging;
 
 namespace Family.Application.Services;
 
-public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyService> logger) : IFamilyService
+public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyService> logger, IUserContextService userContextService) : IFamilyService
 {
-    public async Task<FamilyModel> CreateFamilyAsync(FamilyCreateModel familyCreateModel, UserInfoModel userInfoModel)
+    public async Task<FamilyModel> CreateFamilyAsync(FamilyCreateModel familyCreateModel)
     {
         await unitOfWork.BeginTransactionAsync();
         
         try
         {
-            var userInfoData = await unitOfWork.UserInfoRepository.GetByIdAsync(userInfoModel.Id);
-        
-            if (userInfoData is null)
+            //получаем данные о пользователе из httpContext
+            var userInfoModel = new UserInfoModel
             {
-                await unitOfWork.UserInfoRepository.AddAsync(mapper.Map<UserInfo>(userInfoModel));
-                logger.LogInformation($"UserInfo {userInfoModel.Id}, {userInfoModel.UserName} has been created.");
-            }
+                Id = userContextService.UserId,
+                UserName = userContextService.UserName
+            };
+
+            await unitOfWork.UserInfoRepository.AddAsync(mapper.Map<UserInfo>(userInfoModel));
+            logger.LogInformation($"UserInfo {userInfoModel.Id}, {userInfoModel.UserName} has been created.");
             
-            var family = new Domain.Entities.Family(familyCreateModel.FamilyName);
+            var family = new Domain.Entities.Family(familyCreateModel.FamilyName, Guid.NewGuid());
             var familyHead = new FamilyMember(userInfoModel.UserName, family.Id, Role.Head);
             family.FamilyMembers.Add(familyHead);
             
@@ -59,14 +61,14 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<Famil
         return mapper.Map<FamilyModel>(family);
     }
 
-    public async Task<FamilyModel> UpdateFamilyAsync(FamilyUpdateModel familyUpdateModel)
+    public async Task<FamilyModel> UpdateFamilyAsync(Guid familyId, FamilyUpdateModel familyUpdateModel)
     {
-        var family = await unitOfWork.FamilyRepository.GetByIdAsync(familyUpdateModel.Id);
+        var family = await unitOfWork.FamilyRepository.GetByIdAsync(familyId);
         
         if(family is null)
         {
             logger.LogError("Failed to update family. Family to update not found");
-            throw new FamilyNotFoundException(familyUpdateModel.Id);
+            throw new FamilyNotFoundException(familyId);
         }
 
         await unitOfWork.BeginTransactionAsync();
@@ -88,17 +90,11 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<Famil
         }
     }
 
-    public IEnumerable<FamilyModel> GetFamilyByUserInfo(UserInfoModel userInfo)
+    public IEnumerable<FamilyModel> GetFamilyByUserId(Guid userId)
     {
-        if (userInfo is null)
-        {
-            logger.LogInformation("User is null");
-            throw new ArgumentNullException(nameof(userInfo));
-        }
-
         try
         {
-            var familyMembers = unitOfWork.FamilyMemberRepository.GetAll().Where(fm => fm.UserId == userInfo.Id);
+            var familyMembers = unitOfWork.FamilyMemberRepository.GetAll().Where(fm => fm.UserId == userId);
             var families = unitOfWork.FamilyRepository.GetAll()
                 .Where(f => familyMembers
                     .Any(fm => f.FamilyMembers
