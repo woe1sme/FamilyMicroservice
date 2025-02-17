@@ -76,18 +76,10 @@ namespace Family.API.Controllers
 
         // POST /api/families
         [HttpPost]
-        //[Authorize]
         public async Task<IActionResult> CreateFamily([FromBody] FamilyCreateModel familyCreateModel)
         {
             try
             {
-                // Получаем идентификатор пользователя из Claims
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
-                {
-                    return Unauthorized();
-                }
-
                 var family = await _familyService.CreateFamilyAsync(familyCreateModel);
                 return CreatedAtAction(nameof(CreateFamily), new { id = family.Id }, family);
             }

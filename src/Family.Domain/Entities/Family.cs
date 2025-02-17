@@ -10,7 +10,7 @@ public class Family(Guid id) : Entity<Guid>(id)
     private readonly IList<FamilyMember> _familyMembers = [];
     public IList<FamilyMember> FamilyMembers => _familyMembers;
 
-    public Family(string familyName, Guid familyId) : this(familyId)
+    public Family(string familyName) : this(Guid.NewGuid())
     {
         FamilyName = familyName;
     }

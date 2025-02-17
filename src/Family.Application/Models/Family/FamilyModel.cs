@@ -3,9 +3,9 @@ using Family.Application.Models.FamilyMember;
 
 namespace Family.Application.Models.Family;
 
-public record FamilyModel(string familyName) : IModel
+public record FamilyModel : IModel
 {
-    public string FamilyName { get; init; } = familyName;
+    public string FamilyName { get; init; }
     public required IList<FamilyMemberModel> FamilyMembers { get; init; }
     public Guid Id { get; init; }
 }

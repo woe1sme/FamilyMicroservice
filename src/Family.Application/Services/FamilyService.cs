@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Family.Application.Services;
 
-public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyService> logger, IUserContextService userContextService) : IFamilyService
+public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyService> logger) : IFamilyService
 {
     public async Task<FamilyModel> CreateFamilyAsync(FamilyCreateModel familyCreateModel)
     {
@@ -18,18 +18,11 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<Famil
         
         try
         {
-            //получаем данные о пользователе из httpContext
-            var userInfoModel = new UserInfoModel
-            {
-                Id = userContextService.UserId,
-                UserName = userContextService.UserName
-            };
-
-            await unitOfWork.UserInfoRepository.AddAsync(mapper.Map<UserInfo>(userInfoModel));
-            logger.LogInformation($"UserInfo {userInfoModel.Id}, {userInfoModel.UserName} has been created.");
+            //await unitOfWork.UserInfoRepository.AddAsync(mapper.Map<UserInfo>(userInfoModel));
+            //logger.LogInformation($"UserInfo {userInfoModel.Id}, {userInfoModel.UserName} has been created.");
             
-            var family = new Domain.Entities.Family(familyCreateModel.FamilyName, Guid.NewGuid());
-            var familyHead = new FamilyMember(userInfoModel.UserName, family.Id, Role.Head);
+            var family = new Domain.Entities.Family(familyCreateModel.FamilyName);
+            var familyHead = new FamilyMember(familyCreateModel.CreatorUserName, familyCreateModel.CreatorUserId, Role.Head, family.Id);
             family.FamilyMembers.Add(familyHead);
             
             await unitOfWork.FamilyRepository.AddAsync(family);

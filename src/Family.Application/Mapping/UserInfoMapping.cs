@@ -11,6 +11,7 @@ namespace Family.Application.Mapping
             CreateMap<UserInfoModel, UserInfo>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName));
+            
         }
     }
 }

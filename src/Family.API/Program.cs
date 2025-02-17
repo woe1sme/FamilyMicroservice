@@ -20,30 +20,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// JWT
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = "family-issuer", 
-        ValidAudience = "family-audience", 
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("aUYNC5NmUzAXKvAGREGbiNkjPG7p3QbT"))
-    };
-});
-
-//HttpContextAccessor
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUserContextService, UserContextService>();
-
 //logging
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -73,7 +49,7 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Применение миграций при запуске приложения
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 app.MigrateDatabase();
 
 // Configure the HTTP request pipeline.

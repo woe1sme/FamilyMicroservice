@@ -12,10 +12,21 @@ namespace Family.Application.Validation
     {
         public FamilyCreateModelValidator()
         {
-            RuleFor(x => x.FamilyName).NotEmpty()
-                                      .WithMessage("Specify family Name.")
-                                      .Length(1, 100)
-                                      .WithMessage("Not greater than 100");
+            RuleFor(x => x.FamilyName)
+                .NotEmpty()
+                .WithMessage("Specify family Name.")
+                .Length(1, 100)
+                .WithMessage("Not greater than 100");
+
+            RuleFor(x => x.CreatorUserName)
+                .NotEmpty()
+                .WithMessage("Specify family creator UserName.")
+                .Length(1, 100)
+                .WithMessage("Not greater than 100");
+
+            RuleFor(x => x.CreatorUserId)
+                .NotEmpty()
+                .WithMessage("Specify family creator UserId.");
         }
     }
 }
