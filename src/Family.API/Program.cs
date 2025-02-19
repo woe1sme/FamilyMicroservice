@@ -50,7 +50,7 @@ builder.Services.AddControllers();
 var app = builder.Build();
 
 // Применение миграций при запуске приложения
-app.MigrateDatabase();
+//app.MigrateDatabase();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -60,7 +60,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
 app.MapControllers();
 app.Run();

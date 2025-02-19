@@ -21,9 +21,9 @@ namespace Family.API.Controllers
             _familyMemberCreateModelValidator = familyMemberCreateModelValidator;
         }
 
-        // api/familyMember
+        // POST api/familyMember/{familyId}
         [HttpPost("{familyId:guid}")]
-        public async Task<ActionResult<FamilyMemberModel>> CreateFamilyMemberAsync(Guid familyId, [FromBody] FamilyMemberCreateModel familyMemberCreateModel)
+        public async Task<ActionResult<FamilyMemberModel>> CreateFamilyMember(Guid familyId, [FromBody] FamilyMemberCreateModel familyMemberCreateModel)
         {
             try
             {
@@ -35,13 +35,29 @@ namespace Family.API.Controllers
                 }
 
                 var result = await _familyMemberService.CreateMemberAsync(familyMemberCreateModel, familyId);
-                return result;
+                return CreatedAtAction(nameof(CreateFamilyMember),new {id = result.Id}, result);
             }
             catch (Exception ex) 
             {
                 _logger.LogError(ex, "Error creating family");
                 return StatusCode(StatusCodes.Status400BadRequest, "An error occurred while processing your request.");
             }
-        }        
+        }
+
+        // GET api/familyMember
+        [HttpGet]
+        public ActionResult<IEnumerable<FamilyMemberModel>> GetFamilyMember()
+        {
+            try
+            {
+                var result = _familyMemberService.GetAllFamilyMembers();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting family members");
+                return StatusCode(StatusCodes.Status400BadRequest, "An error occurred while processing your request.");
+            }
+        }
     }
 }

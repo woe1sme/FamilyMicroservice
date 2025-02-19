@@ -10,7 +10,7 @@ public sealed class FamilyDbContext : DbContext
 
     public FamilyDbContext(DbContextOptions<FamilyDbContext> options) : base(options)
     {
-        //Database.EnsureDeleted();
+        Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
