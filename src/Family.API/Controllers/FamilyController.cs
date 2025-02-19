@@ -1,14 +1,8 @@
 ﻿using Family.Application.Abstractions;
 using Family.Application.Models.Family;
-using Family.Application.Models.UserInfo;
-using Family.Domain.Entities;
-using Family.Domain.Entities.Enums;
-using Microsoft.AspNetCore.Authorization;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 
 namespace Family.API.Controllers
@@ -19,11 +13,64 @@ namespace Family.API.Controllers
     {
         private readonly IFamilyService _familyService;
         private readonly ILogger _logger;
+        private readonly IValidator<FamilyAndFamilyHeadCreateModel> _familyAndFamilyHeadCreateModelValidator;
+        private readonly IValidator<FamilyUpdateModel> _familyUpdateModelValidator;
 
-        public FamilyController(IFamilyService familyService, ILogger<FamilyController> logger)
+        public FamilyController(IFamilyService familyService,
+                                ILogger<FamilyController> logger,
+                                IValidator<FamilyAndFamilyHeadCreateModel> familyAndFamilyHeadCreateModelValidator,
+                                IValidator<FamilyUpdateModel> familyUpdateModelValidator)
         {
             _familyService = familyService;
             _logger = logger;
+            _familyAndFamilyHeadCreateModelValidator = familyAndFamilyHeadCreateModelValidator;
+            _familyUpdateModelValidator = familyUpdateModelValidator;
+        }
+
+        // POST /api/families
+        [HttpPost]
+        public async Task<IActionResult> CreateFamily([FromBody] FamilyAndFamilyHeadCreateModel familyAndFamilyHeadCreateModel)
+        {
+            try
+            {
+                var validateResult = _familyAndFamilyHeadCreateModelValidator.Validate(familyAndFamilyHeadCreateModel);
+                if (!validateResult.IsValid)
+                {
+                    _logger.LogError(message: $"{validateResult}");
+                    return StatusCode(StatusCodes.Status400BadRequest, $"An error occurred while processing your request. {validateResult}");
+                }
+
+                var family = await _familyService.CreateFamilyAsync(familyAndFamilyHeadCreateModel);
+                return CreatedAtAction(nameof(CreateFamily), new { id = family.Id }, family);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating family");
+                return StatusCode(StatusCodes.Status400BadRequest, "An error occurred while processing your request.");
+            }
+        }
+
+        // PATCH api/family/{familyId}
+        [HttpPatch("{familyId:guid}")]
+        public async Task<IActionResult> UpdateFamily(Guid familyId, [FromBody] FamilyUpdateModel familyUpdateModel)
+        {
+            try
+            {
+                var validateResult = _familyUpdateModelValidator.Validate(familyUpdateModel);
+                if (!validateResult.IsValid)
+                {
+                    _logger.LogError(message: $"{validateResult}");
+                    return StatusCode(StatusCodes.Status400BadRequest, $"An error occurred while processing your request. {validateResult}");
+                }
+
+                await _familyService.UpdateFamilyAsync(familyId, familyUpdateModel);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating family {familyId}", familyId);
+                return StatusCode(StatusCodes.Status400BadRequest, "An error occurred while processing your request.");
+            }
         }
 
         // GET api/family/{familyId}
@@ -38,7 +85,7 @@ namespace Family.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting family with ID {FamilyId}", familyId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return StatusCode(StatusCodes.Status400BadRequest, "An error occurred while processing your request.");
             }
         }
 
@@ -55,7 +102,7 @@ namespace Family.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting family by UserId {userId}", userId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return StatusCode(StatusCodes.Status400BadRequest, "An error occurred while processing your request.");
             }
         }
 
@@ -70,63 +117,8 @@ namespace Family.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting families");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return StatusCode(StatusCodes.Status400BadRequest, "An error occurred while processing your request.");
             }
-        }
-
-        // POST /api/families
-        [HttpPost]
-        public async Task<IActionResult> CreateFamily([FromBody] FamilyCreateModel familyCreateModel)
-        {
-            try
-            {
-                var family = await _familyService.CreateFamilyAsync(familyCreateModel);
-                return CreatedAtAction(nameof(CreateFamily), new { id = family.Id }, family);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating family");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
-            }
-        }
-
-        [HttpPatch("{familyId:guid}")]
-        public async Task<IActionResult> UpdateFamily(Guid familyId, [FromBody] FamilyUpdateModel familyUpdateModel)
-        {
-            try
-            {
-                await _familyService.UpdateFamilyAsync(familyId, familyUpdateModel);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating family {familyId}", familyId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
-            }
-        }
-
-        //временный метод получения токена тестового пользователя
-        //[HttpGet("~/api/token")]
-        //public IActionResult GetToken()
-        //{
-        //    var claims = new List<Claim>
-        //    {
-        //        new Claim(ClaimTypes.NameIdentifier, "b5bb7427-5922-4262-9cd4-0758d87bc1d2"),
-        //        new Claim(ClaimTypes.Name, "TestUserName")
-        //    };
-
-        //    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("aUYNC5NmUzAXKvAGREGbiNkjPG7p3QbT"));
-        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        //    var token = new JwtSecurityToken(
-        //        issuer: "family-issuer",
-        //        audience: "family-audience",
-        //        claims: claims,
-        //        expires: DateTime.UtcNow.AddHours(24),
-        //        signingCredentials: creds
-        //    );
-
-        //    return Ok( new JwtSecurityTokenHandler().WriteToken(token));
-        //}
+        }  
     }
 }

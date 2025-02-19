@@ -9,17 +9,14 @@ public class EfUnitOfWork : IUnitOfWork
     private IDbContextTransaction _transaction;
     public IFamilyRepository FamilyRepository { get; }
     public IFamilyMemberRepository FamilyMemberRepository { get; }
-    public IUserInfoRepository UserInfoRepository { get; }
     
     public EfUnitOfWork(FamilyDbContext dbContext,
         IFamilyRepository familyRepository,
-        IFamilyMemberRepository familyMemberRepository,
-        IUserInfoRepository userInfoRepository)
+        IFamilyMemberRepository familyMemberRepository)
     {
         _dbContext = dbContext;
         FamilyRepository = familyRepository;
         FamilyMemberRepository = familyMemberRepository;
-        UserInfoRepository = userInfoRepository;
     }
 
     public async Task<int> SaveChangesAsync()

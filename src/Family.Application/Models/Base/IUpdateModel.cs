@@ -1,6 +1,6 @@
 namespace Family.Application.Models.Base;
 
-public interface IUpdateModel : IModel
+public interface IUpdateModel
 {
-    public string FamilyName { get; init; }
+
 }

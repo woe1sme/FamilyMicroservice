@@ -12,8 +12,8 @@ public class FamilyMapping : Profile
             .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName))
             .ForMember(dest => dest.FamilyMembers, opt => opt.MapFrom(src => src.FamilyMembers));
 
-        CreateMap<FamilyCreateModel, Domain.Entities.Family>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
-            .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName));
+        CreateMap<FamilyAndFamilyHeadCreateModel, Domain.Entities.Family>()
+            .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.FamilyName))
+            .ConstructUsing(x => new Domain.Entities.Family(x.FamilyName, Guid.Empty));
     }
 }

@@ -15,7 +15,7 @@ namespace Family.API.Extension
             try
             {
                 logger.LogInformation("Applying database migrations...");
-                context.Database.Migrate();
+                //context.Database.Migrate();
                 logger.LogInformation("Database migrations applied successfully.");
             }
             catch (Exception ex)

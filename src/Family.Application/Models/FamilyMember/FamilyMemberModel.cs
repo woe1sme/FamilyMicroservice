@@ -6,9 +6,11 @@ public record FamilyMemberModel : IModel
 {
     public Guid Id { get; init; }
 
-    public required string Name { get; init; }
+    public Guid UserId { get; init; }
+
+    public string Name { get; init; }
     
-    public required Guid FamilyId { get; init; }
+    public Guid FamilyId { get; init; }
     
-    public required string Role { get; init; }
+    public string Role { get; init; }
 }

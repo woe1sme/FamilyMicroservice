@@ -2,7 +2,6 @@ using AutoMapper;
 using Family.Application.Abstractions;
 using Family.Application.Exceptions;
 using Family.Application.Models.Family;
-using Family.Application.Models.UserInfo;
 using Family.Domain.Entities;
 using Family.Domain.Entities.Enums;
 using Family.Domain.Repositories.Abstractions;
@@ -12,22 +11,19 @@ namespace Family.Application.Services;
 
 public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyService> logger) : IFamilyService
 {
-    public async Task<FamilyModel> CreateFamilyAsync(FamilyCreateModel familyCreateModel)
+    public async Task<FamilyModel> CreateFamilyAsync(FamilyAndFamilyHeadCreateModel familyAndFamilyHeadCreateModel)
     {
         await unitOfWork.BeginTransactionAsync();
         
         try
         {
-            //await unitOfWork.UserInfoRepository.AddAsync(mapper.Map<UserInfo>(userInfoModel));
-            //logger.LogInformation($"UserInfo {userInfoModel.Id}, {userInfoModel.UserName} has been created.");
+            var family = await unitOfWork.FamilyRepository.AddAsync(mapper.Map<Domain.Entities.Family>(familyAndFamilyHeadCreateModel));
             
-            var family = new Domain.Entities.Family(familyCreateModel.FamilyName);
-            var familyHead = new FamilyMember(familyCreateModel.CreatorUserName, familyCreateModel.CreatorUserId, Role.Head, family.Id);
-            family.FamilyMembers.Add(familyHead);
-            
-            await unitOfWork.FamilyRepository.AddAsync(family);
-            await unitOfWork.FamilyMemberRepository.AddAsync(familyHead);
-            
+            var familyHeadMapped = mapper.Map<FamilyMember>(familyAndFamilyHeadCreateModel);
+            familyHeadMapped.FamilyId = family.Id;
+
+            var familyHead = await unitOfWork.FamilyMemberRepository.AddAsync(familyHeadMapped);
+
             await unitOfWork.SaveChangesAsync();
             await unitOfWork.CommitTransactionAsync();
             
@@ -68,7 +64,7 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<Famil
         
         try
         {
-            family.FamilyName = familyUpdateModel.FamilyName;
+            family.FamilyName = familyUpdateModel.Name;
             await unitOfWork.FamilyRepository.UpdateAsync(family);
             await unitOfWork.SaveChangesAsync();
             await unitOfWork.CommitTransactionAsync();

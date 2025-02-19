@@ -12,7 +12,7 @@ namespace Family.Application.Validation
     {
         public FamilyUpdateModelValidator()
         {
-            RuleFor(x => x.FamilyName).NotEmpty()
+            RuleFor(x => x.Name).NotEmpty()
                                       .WithMessage("Specify family Name.")
                                       .Length(1, 100)
                                       .WithMessage("Not greater than 100");

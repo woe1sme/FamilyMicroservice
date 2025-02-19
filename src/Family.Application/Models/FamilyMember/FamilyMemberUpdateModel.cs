@@ -4,11 +4,12 @@ namespace Family.Application.Models.FamilyMember;
 
 public record FamilyMemberUpdateModel : IUpdateModel
 {
-    public Guid Id { get; init; }
-    
-    public string FamilyName { get; init; }
-    
-    public required Guid FamilyId { get; init; }
-    
-    public required string Role { get; init; }
+    public string Name { get; init; }
+    public string Role { get; init; }
+
+    public FamilyMemberUpdateModel(string name, string role)
+    {
+        Name = name;
+        Role = role;
+    }
 }

@@ -2,8 +2,12 @@ using Family.Application.Models.Base;
 
 namespace Family.Application.Models.Family;
 
-public record FamilyUpdateModel(string FamilyName) : IUpdateModel
+public record FamilyUpdateModel : IUpdateModel
 {
-    public string FamilyName { get; init; } = FamilyName;
-    public Guid Id { get; init; }
+    public string Name { get; init; }
+
+    public FamilyUpdateModel(string familyName)
+    {
+        Name = familyName;
+    }
 }

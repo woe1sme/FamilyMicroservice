@@ -2,7 +2,6 @@ using AutoMapper;
 using Family.Application.Abstractions;
 using Family.Application.Exceptions;
 using Family.Application.Models.FamilyMember;
-using Family.Application.Models.UserInfo;
 using Family.Domain.Entities;
 using Family.Domain.Repositories.Abstractions;
 using Microsoft.Extensions.Logging;
@@ -11,7 +10,7 @@ namespace Family.Application.Services;
 
 public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyMemberService> logger) : IFamilyMemberService
 {
-    public async Task<FamilyMemberModel> AddMemberToFamilyAsync(FamilyMemberCreateModel familyMemberCreateModel, UserInfoModel userInfo, Guid familyId)
+    public async Task<FamilyMemberModel> CreateMemberAsync(FamilyMemberCreateModel familyMemberCreateModel, Guid familyId)
     {
         var family = await unitOfWork.FamilyRepository.GetByIdAsync(familyId);
 
@@ -25,15 +24,14 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
         
         try
         {
-            var newFamilyMember = mapper.Map<FamilyMember>((familyMemberCreateModel, userInfo));
-            
-            await unitOfWork.FamilyMemberRepository.AddAsync(newFamilyMember);
-            family.FamilyMembers.Add(newFamilyMember);
-            await unitOfWork.FamilyRepository.UpdateAsync(family);
+            var mappedFamilyMember = mapper.Map<FamilyMember>(familyMemberCreateModel);
+            mappedFamilyMember.FamilyId = family.Id;
+
+            await unitOfWork.FamilyMemberRepository.AddAsync(mappedFamilyMember);
             await unitOfWork.SaveChangesAsync();
             await unitOfWork.CommitTransactionAsync();
-            
-            return mapper.Map<FamilyMemberModel>(newFamilyMember);
+
+            return mapper.Map<FamilyMemberModel>(mappedFamilyMember);
         }
         catch (Exception ex)
         {
@@ -43,25 +41,28 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
         }
     }
 
-    public async Task RemoveMemberFromFamilyAsync(FamilyMemberModel familyMember, Guid familyId)
+    public async Task RemoveMemberAsync(Guid familyMemberId, Guid familyId)
     {
         var family = await unitOfWork.FamilyRepository.GetByIdAsync(familyId);
-
         if (family is null)
         {
             logger.LogError($"Family with id: {familyId} not found");
             throw new FamilyNotFoundException(familyId);
         }
 
+        var familyMember = await unitOfWork.FamilyMemberRepository.GetByIdAsync(familyMemberId);
+        if (familyMember is null)
+        {
+            logger.LogError($"Family with id: {familyMemberId} not found");
+            throw new FamilyMemberNotFoundException(familyMemberId);
+        }
+
         await unitOfWork.BeginTransactionAsync();
         
         try
         {
-            var removedFamilyMember = mapper.Map<FamilyMember>(familyMember);
-            family.FamilyMembers.Remove(removedFamilyMember);
-        
-            await unitOfWork.FamilyMemberRepository.DeleteAsync(removedFamilyMember);
-            await unitOfWork.FamilyRepository.UpdateAsync(family);
+            family.FamilyMembers.Remove(familyMember);
+            await unitOfWork.FamilyMemberRepository.DeleteAsync(familyMember);
             await unitOfWork.SaveChangesAsync();
             await unitOfWork.CommitTransactionAsync();
             
@@ -74,14 +75,14 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
         }
     }
 
-    public async Task<FamilyMemberModel> UpdateMemberAsync(FamilyMemberUpdateModel familyMemberUpdateModel)
+    public async Task<FamilyMemberModel> UpdateMemberAsync(FamilyMemberUpdateModel familyMemberUpdateModel, Guid familyMemberId)
     {
-        var familyMember = await unitOfWork.FamilyRepository.GetByIdAsync(familyMemberUpdateModel.Id);
+        var familyMember = await unitOfWork.FamilyRepository.GetByIdAsync(familyMemberId);
 
         if (familyMember is null)
         {
-            logger.LogError($"Family with id: {familyMemberUpdateModel.Id} not found");
-            throw new FamilyMemberNotFoundException(familyMemberUpdateModel.Id);
+            logger.LogError($"Family with id: {familyMemberId} not found");
+            throw new FamilyMemberNotFoundException(familyMemberId);
         }
         
         await unitOfWork.BeginTransactionAsync();
@@ -131,26 +132,26 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
         return mapper.Map<FamilyMemberModel>(familyMember);
     }
 
-    public IEnumerable<FamilyMemberModel> GetFamilyMemberByUserInfo(UserInfoModel userInfo)
-    {
-        if (userInfo is null)
-        {
-            logger.LogError("User is null");
-            throw new ArgumentNullException(nameof(userInfo));
-        }
+    //public IEnumerable<FamilyMemberModel> GetFamilyMemberByUserInfo(UserInfoModel userInfo)
+    //{
+    //    if (userInfo is null)
+    //    {
+    //        logger.LogError("User is null");
+    //        throw new ArgumentNullException(nameof(userInfo));
+    //    }
 
-        try
-        {
-            var familyMembers = unitOfWork.FamilyMemberRepository.GetAll().Where(fm => fm.UserId == userInfo.Id);
+    //    try
+    //    {
+    //        var familyMembers = unitOfWork.FamilyMemberRepository.GetAll().Where(fm => fm.UserId == userInfo.Id);
 
-            return mapper.Map<IEnumerable<FamilyMemberModel>>(familyMembers);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to get family members");
-            throw;
-        }
-    }
+    //        return mapper.Map<IEnumerable<FamilyMemberModel>>(familyMembers);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        logger.LogError(ex, "Failed to get family members");
+    //        throw;
+    //    }
+    //}
 
     public async Task<FamilyMemberModel> GetFamilyMemberByUserIdAsync(Guid userInfoId, Guid familyId)
     {
@@ -164,5 +165,10 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
         
         return mapper.Map<FamilyMemberModel>(
             await unitOfWork.FamilyMemberRepository.GetFamilyMemberByUserIdAsync(userInfoId, familyId));
+    }
+
+    public IEnumerable<FamilyMemberModel> GetAllFamilyMembers()
+    {
+        return mapper.Map<IEnumerable<FamilyMemberModel>>(unitOfWork.FamilyMemberRepository.GetAll());
     }
 }
