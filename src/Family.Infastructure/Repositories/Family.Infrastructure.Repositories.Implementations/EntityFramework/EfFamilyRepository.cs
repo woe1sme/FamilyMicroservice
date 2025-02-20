@@ -1,4 +1,6 @@
+using Family.Domain.Entities.Base;
 using Family.Infrastructure.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 namespace Family.Infrastructure.Repositories.Implementations.EntityFramework;
 
@@ -6,13 +8,8 @@ public class EfFamilyRepository(FamilyDbContext context) : EfRepository<Domain.E
 {
     private readonly FamilyDbContext _context = context;
 
-    public IEnumerable<Domain.Entities.Family?> GetAllMemberFamilies(FamilyMember member)
+    public new IQueryable<Domain.Entities.Family> GetAll()
     {
-        return _context.Family.Where(f => f.FamilyMembers.Contains(member)).AsEnumerable();
-    }
-
-    public async Task<Domain.Entities.Family?> GetMemberFamilyAsync(FamilyMember member)
-    {
-        return await _context.Family.FindAsync(member.FamilyId);
+        return context.Set<Domain.Entities.Family>().AsQueryable().Include(x => x.FamilyMembers);
     }
 }

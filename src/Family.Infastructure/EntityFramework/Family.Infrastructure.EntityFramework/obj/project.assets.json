@@ -2950,19 +2950,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\123\\.nuget\\packages\\": {}
+    "C:\\Users\\S.Lazuka\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Infastructure\\EntityFramework\\Family.Infrastructure.EntityFramework\\Family.Infrastructure.EntityFramework.csproj",
+      "projectUniqueName": "C:\\Projects\\Wallet\\FamilyMicroservice\\src\\Family.Infastructure\\EntityFramework\\Family.Infrastructure.EntityFramework\\Family.Infrastructure.EntityFramework.csproj",
       "projectName": "Family.Infrastructure.EntityFramework",
-      "projectPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Infastructure\\EntityFramework\\Family.Infrastructure.EntityFramework\\Family.Infrastructure.EntityFramework.csproj",
-      "packagesPath": "C:\\Users\\123\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Infastructure\\EntityFramework\\Family.Infrastructure.EntityFramework\\obj\\",
+      "projectPath": "C:\\Projects\\Wallet\\FamilyMicroservice\\src\\Family.Infastructure\\EntityFramework\\Family.Infrastructure.EntityFramework\\Family.Infrastructure.EntityFramework.csproj",
+      "packagesPath": "C:\\Users\\S.Lazuka\\.nuget\\packages\\",
+      "outputPath": "C:\\Projects\\Wallet\\FamilyMicroservice\\src\\Family.Infastructure\\EntityFramework\\Family.Infrastructure.EntityFramework\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\123\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\S.Lazuka\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -2970,14 +2970,15 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj": {
-              "projectPath": "C:\\Users\\123\\RiderProjects\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj"
+            "C:\\Projects\\Wallet\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj": {
+              "projectPath": "C:\\Projects\\Wallet\\FamilyMicroservice\\src\\Family.Domain\\Family.Domain.csproj"
             }
           }
         }
@@ -3034,7 +3035,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

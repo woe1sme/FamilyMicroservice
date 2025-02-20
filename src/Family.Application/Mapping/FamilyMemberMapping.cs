@@ -29,7 +29,8 @@ namespace Family.Application.Mapping
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.Empty))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => Enum.Parse(typeof(Role), src.Role)))
-                .ForMember(dest => dest.FamilyId, opt => opt.MapFrom(src => Guid.Empty));
+                .ForMember(dest => dest.FamilyId, opt => opt.MapFrom(src => Guid.Empty))
+                .ConstructUsing(x => new FamilyMember(Guid.Empty, x.Name, Guid.Empty,(Role)Enum.Parse(typeof(Role), x.Role), Guid.Empty));
 
             CreateMap<FamilyAndFamilyHeadCreateModel, FamilyMember>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.FamilyHeadUserName))

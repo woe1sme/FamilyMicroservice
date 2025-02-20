@@ -16,7 +16,8 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=FamilyDb
     ports:
-      - "5432:5432"
+#      - "5432:5432"
+       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -31,9 +32,11 @@ services:
       - postgres
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+#      - CONNECTION_STRING=Host=postgres;Port=5432;Database=FamilyDb;Username=postgres;Password=postgres
       - CONNECTION_STRING=Host=postgres;Port=5432;Database=FamilyDb;Username=postgres;Password=postgres
     ports:
-      - "8080:80"
+#      - "8080:80"
+      - "5000:5000"
     networks:
       - app-network
 

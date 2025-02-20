@@ -7,12 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Family.Domain\Family.Domain.csproj" />
-      <ProjectReference Include="..\..\EntityFramework\Family.Infrastructure.EntityFramework\Family.Infrastructure.EntityFramework.csproj" />
+      <Compile Remove="InMemory\**" />
+      <EmbeddedResource Remove="InMemory\**" />
+      <None Remove="InMemory\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="InMemory\" />
+      <ProjectReference Include="..\..\..\Family.Domain\Family.Domain.csproj" />
+      <ProjectReference Include="..\..\EntityFramework\Family.Infrastructure.EntityFramework\Family.Infrastructure.EntityFramework.csproj" />
     </ItemGroup>
 
 </Project>

@@ -8,16 +8,16 @@ using System.Text;
 namespace Family.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class FamilyController : ControllerBase
+    [Route("api/families")]
+    public class FamiliesController : ControllerBase
     {
         private readonly IFamilyService _familyService;
         private readonly ILogger _logger;
         private readonly IValidator<FamilyAndFamilyHeadCreateModel> _familyAndFamilyHeadCreateModelValidator;
         private readonly IValidator<FamilyUpdateModel> _familyUpdateModelValidator;
 
-        public FamilyController(IFamilyService familyService,
-                                ILogger<FamilyController> logger,
+        public FamiliesController(IFamilyService familyService,
+                                ILogger<FamiliesController> logger,
                                 IValidator<FamilyAndFamilyHeadCreateModel> familyAndFamilyHeadCreateModelValidator,
                                 IValidator<FamilyUpdateModel> familyUpdateModelValidator)
         {
@@ -28,19 +28,29 @@ namespace Family.API.Controllers
         }
 
         // POST /api/families
+        /// <summary>
+        /// Создает новую семью вместе с главой семьи.
+        /// </summary>
+        /// <param name="model">Модель, содержащая данные семьи и главы семьи.</param>
+        /// <returns>Созданная семья.</returns>
+        /// <response code="201">Семья успешно создана.</response>
+        /// <response code="400">Неверные входные данные.</response>
         [HttpPost]
-        public async Task<IActionResult> CreateFamily([FromBody] FamilyAndFamilyHeadCreateModel familyAndFamilyHeadCreateModel)
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(FamilyModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<FamilyModel>> CreateFamily([FromBody] FamilyAndFamilyHeadCreateModel model)
         {
             try
             {
-                var validateResult = _familyAndFamilyHeadCreateModelValidator.Validate(familyAndFamilyHeadCreateModel);
+                var validateResult = _familyAndFamilyHeadCreateModelValidator.Validate(model);
                 if (!validateResult.IsValid)
                 {
                     _logger.LogError(message: $"{validateResult}");
                     return StatusCode(StatusCodes.Status400BadRequest, $"An error occurred while processing your request. {validateResult}");
                 }
 
-                var family = await _familyService.CreateFamilyAsync(familyAndFamilyHeadCreateModel);
+                var family = await _familyService.CreateFamilyAsync(model);
                 return CreatedAtAction(nameof(CreateFamily), new { id = family.Id }, family);
             }
             catch (Exception ex)
@@ -50,8 +60,19 @@ namespace Family.API.Controllers
             }
         }
 
-        // PATCH api/family/{familyId}
+        // PATCH /api/families/{familyId}
+        /// <summary>
+        /// Обновляет данные существующей семьи.
+        /// </summary>
+        /// <param name="familyId">Идентификатор семьи для обновления.</param>
+        /// <param name="familyUpdateModel">Модель с информацией для обновления.</param>
+        /// <response code="204">Семья успешно обновлена.</response>
+        /// <response code="400">Неверные входные данные.</response>
+        /// <response code="404">Семья не найдена.</response>
         [HttpPatch("{familyId:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateFamily(Guid familyId, [FromBody] FamilyUpdateModel familyUpdateModel)
         {
             try
@@ -73,9 +94,20 @@ namespace Family.API.Controllers
             }
         }
 
-        // GET api/family/{familyId}
+        // GET /api/families/{familyId}
+        /// <summary>
+        /// Получает информацию о семье по ее идентификатору.
+        /// </summary>
+        /// <param name="familyId">Идентификатор семьи.</param>
+        /// <returns>Запрашиваемая семья.</returns>
+        /// <response code="200">Семья найдена.</response>
+        /// <response code="404">Семья не найдена.</response>
         [HttpGet("{familyId:guid}")]
-        public async Task<IActionResult> GetFamilyById(Guid familyId)
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FamilyModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<FamilyModel>> GetFamilyById(Guid familyId)
         {
             try
             {
@@ -89,9 +121,20 @@ namespace Family.API.Controllers
             }
         }
 
-        // GET /api/users/{userId}/families
-        [HttpGet("~/api/users/{userId:guid}/families")]
-        public IActionResult GetFamiliesByUserId(Guid userId)
+        // GET /api/families/user/{userId}
+        /// <summary>
+        /// Получает семьи, связанные с пользователем.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <returns>Список семей.</returns>
+        /// <response code="200">Семьи найдены.</response>
+        /// <response code="404">Семьи для данного пользователя не найдены.</response>
+        [HttpGet("user/{userId:guid}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FamilyModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<FamilyModel>> GetFamiliesByUserId(Guid userId)
         {
             try
             {
@@ -106,9 +149,10 @@ namespace Family.API.Controllers
             }
         }
 
-        // GET api/family
+        // GET /api/families
         [HttpGet]
-        public IActionResult GetAllFamilies()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FamilyModel>))]
+        public ActionResult<IEnumerable<FamilyModel>> GetAllFamilies()
         {
             try
             {

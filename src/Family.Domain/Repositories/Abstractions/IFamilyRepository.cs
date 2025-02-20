@@ -6,5 +6,5 @@ namespace Family.Domain.Repositories.Abstractions;
 
 public interface IFamilyRepository : IRepository<Entities.Family, Guid>
 {
-    public Task<Entities.Family?> GetMemberFamilyAsync(FamilyMember member);
+
 }

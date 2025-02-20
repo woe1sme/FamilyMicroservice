@@ -1,8 +1,10 @@
 using AutoMapper;
 using Family.Application.Abstractions;
 using Family.Application.Exceptions;
+using Family.Application.Models.Base;
 using Family.Application.Models.FamilyMember;
 using Family.Domain.Entities;
+using Family.Domain.Entities.Enums;
 using Family.Domain.Repositories.Abstractions;
 using Microsoft.Extensions.Logging;
 
@@ -77,7 +79,7 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
 
     public async Task<FamilyMemberModel> UpdateMemberAsync(FamilyMemberUpdateModel familyMemberUpdateModel, Guid familyMemberId)
     {
-        var familyMember = await unitOfWork.FamilyRepository.GetByIdAsync(familyMemberId);
+        var familyMember = await unitOfWork.FamilyMemberRepository.GetByIdAsync(familyMemberId);
 
         if (familyMember is null)
         {
@@ -89,8 +91,22 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
         
         try
         {
-            var updatedFamilyMember = await unitOfWork.FamilyMemberRepository
-                .UpdateAsync(mapper.Map<FamilyMember>(familyMemberUpdateModel));
+            familyMember.Name = familyMemberUpdateModel.Name ?? familyMember.Name;
+
+            if (!string.IsNullOrEmpty(familyMemberUpdateModel.Role))
+            {
+                if (Enum.TryParse(typeof(Role), familyMemberUpdateModel.Role, out var role))
+                {
+                    familyMember.Role = (Role)role;
+                }
+                else
+                {
+                    logger.LogError("Invalid role value: {Role}", familyMemberUpdateModel.Role);
+                    throw new ArgumentException($"Invalid role value: {familyMemberUpdateModel.Role}");
+                }
+            }
+
+            var updatedFamilyMember = await unitOfWork.FamilyMemberRepository.UpdateAsync(familyMember);
             
             await unitOfWork.SaveChangesAsync();
             await unitOfWork.CommitTransactionAsync();
@@ -132,26 +148,19 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
         return mapper.Map<FamilyMemberModel>(familyMember);
     }
 
-    //public IEnumerable<FamilyMemberModel> GetFamilyMemberByUserInfo(UserInfoModel userInfo)
-    //{
-    //    if (userInfo is null)
-    //    {
-    //        logger.LogError("User is null");
-    //        throw new ArgumentNullException(nameof(userInfo));
-    //    }
-
-    //    try
-    //    {
-    //        var familyMembers = unitOfWork.FamilyMemberRepository.GetAll().Where(fm => fm.UserId == userInfo.Id);
-
-    //        return mapper.Map<IEnumerable<FamilyMemberModel>>(familyMembers);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        logger.LogError(ex, "Failed to get family members");
-    //        throw;
-    //    }
-    //}
+    public IEnumerable<FamilyMemberModel> GetFamilyMemberByUserInfo(Guid userId)
+    {
+        try
+        {
+            var familyMembers = unitOfWork.FamilyMemberRepository.GetAll().Where(fm => fm.UserId == userId);
+            return mapper.Map<IEnumerable<FamilyMemberModel>>(familyMembers);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get family members");
+            throw;
+        }
+    }
 
     public async Task<FamilyMemberModel> GetFamilyMemberByUserIdAsync(Guid userInfoId, Guid familyId)
     {

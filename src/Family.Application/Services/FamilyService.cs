@@ -3,7 +3,6 @@ using Family.Application.Abstractions;
 using Family.Application.Exceptions;
 using Family.Application.Models.Family;
 using Family.Domain.Entities;
-using Family.Domain.Entities.Enums;
 using Family.Domain.Repositories.Abstractions;
 using Microsoft.Extensions.Logging;
 

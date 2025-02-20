@@ -12,7 +12,12 @@ namespace Family.Application.Validation
     {
         public FamilyMemberCreateModelValidator() 
         {
-            
+            RuleFor(x => x.Name).NotEmpty()
+                                .WithMessage("Specify name.")
+                                .Length(1, 100)
+                                .WithMessage("Not greater than 100");
+            RuleFor(x => x.UserId).NotEmpty();
+            RuleFor(x => x.Role).NotEmpty();
         }
     }
 }
