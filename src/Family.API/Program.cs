@@ -1,4 +1,3 @@
-using Family.API.Extension;
 using Family.Application.Abstractions;
 using Family.Application.Mapping;
 using Family.Application.Models.Family;
@@ -10,9 +9,7 @@ using Family.Infrastructure.EntityFramework;
 using Family.Infrastructure.Repositories.Implementations.EntityFramework;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,9 +52,6 @@ builder.Services.AddScoped<IValidator<FamilyMemberUpdateModel>, FamilyMemberUpda
 builder.Services.AddControllers();
 
 var app = builder.Build();
-
-// Применение миграций при запуске приложения
-//app.MigrateDatabase();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
