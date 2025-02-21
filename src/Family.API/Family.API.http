@@ -1,6 +1,92 @@
-@Family.API_HostAddress = http://localhost:5129
-
-//GET {{Family.API_HostAddress}}/weatherforecast/
-//Accept: application/json
+@baseUrl = http://localhost:5000
+@familyId = 
+@familyMemberId = 
+@userId = a3a9a6ba-9439-4271-92e2-dfac6a4f7858
 
 ###
+
+# Создание новой семьи
+POST {{baseUrl}}/api/families
+Content-Type: application/json
+
+{
+  "name": "Doe Family"
+}
+
+> {%
+  const data = JSON.parse(response.body);
+  client.global.set("familyId", data.id);
+%}
+
+###
+
+# Получение информации о семье по ID
+GET {{baseUrl}}/api/families/{{familyId}}
+
+###
+
+# Обновление информации о семье
+PATCH {{baseUrl}}/api/families/{{familyId}}
+Content-Type: application/json
+
+{
+  "name": "Doe Family Updated"
+}
+
+###
+
+# Получение списка всех семей
+GET {{baseUrl}}/api/families
+
+###
+
+# Добавление нового члена семьи
+POST {{baseUrl}}/api/families/{{familyId}}/members
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "role": "Adult",
+  "userId": "{{userId}}"
+}
+
+> {%
+  const data = JSON.parse(response.body);
+  client.global.set("familyMemberId", data.id);
+%}
+
+###
+
+# Получение информации о члене семьи по ID
+GET {{baseUrl}}/api/families/{{familyId}}/members/{{familyMemberId}}
+
+###
+
+# Обновление информации о члене семьи
+PATCH {{baseUrl}}/api/families/{{familyId}}/members/{{familyMemberId}}
+Content-Type: application/json
+
+{
+  "name": "Jane Smith",
+  "role": "Adult"
+}
+
+###
+
+# Получение списка членов семьи
+GET {{baseUrl}}/api/families/{{familyId}}/members
+
+###
+
+# Получение члена семьи по ID пользователя
+GET {{baseUrl}}/api/families/{{familyId}}/members/by-user/{{userId}}
+
+###
+
+# Удаление члена семьи
+DELETE {{baseUrl}}/api/families/{{familyId}}/members/{{familyMemberId}}
+
+###
+
+# Получение всех семей по ID пользователя
+GET {{baseUrl}}/api/families/user/{{userId}}

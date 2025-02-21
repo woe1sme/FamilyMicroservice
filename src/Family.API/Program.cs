@@ -1,9 +1,9 @@
+using Family.API.Validation;
 using Family.Application.Abstractions;
 using Family.Application.Mapping;
 using Family.Application.Models.Family;
 using Family.Application.Models.FamilyMember;
 using Family.Application.Services;
-using Family.Application.Validation;
 using Family.Domain.Repositories.Abstractions;
 using Family.Infrastructure.EntityFramework;
 using Family.Infrastructure.Repositories.Implementations.EntityFramework;

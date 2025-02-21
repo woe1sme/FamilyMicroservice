@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Family.Application.Validation
+namespace Family.API.Validation
 {
     public class FamilyMemberUpdateModelValidator : AbstractValidator<FamilyMemberUpdateModel>
     {
-        public FamilyMemberUpdateModelValidator() 
+        public FamilyMemberUpdateModelValidator()
         {
-            
+
         }
     }
 }

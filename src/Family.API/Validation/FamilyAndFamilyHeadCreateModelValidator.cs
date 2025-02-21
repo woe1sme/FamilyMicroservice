@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Family.Application.Validation
+namespace Family.API.Validation
 {
     public class FamilyAndFamilyHeadCreateModelValidator : AbstractValidator<FamilyAndFamilyHeadCreateModel>
     {

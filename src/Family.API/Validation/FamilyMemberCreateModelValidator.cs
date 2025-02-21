@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Family.Application.Validation
+namespace Family.API.Validation
 {
     public class FamilyMemberCreateModelValidator : AbstractValidator<FamilyMemberCreateModel>
     {
-        public FamilyMemberCreateModelValidator() 
+        public FamilyMemberCreateModelValidator()
         {
             RuleFor(x => x.Name).NotEmpty()
                                 .WithMessage("Specify name.")

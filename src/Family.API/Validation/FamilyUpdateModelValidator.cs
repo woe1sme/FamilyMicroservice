@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Family.Application.Validation
+namespace Family.API.Validation
 {
     public class FamilyUpdateModelValidator : AbstractValidator<FamilyUpdateModel>
     {
@@ -16,6 +16,6 @@ namespace Family.Application.Validation
                                       .WithMessage("Specify family Name.")
                                       .Length(1, 100)
                                       .WithMessage("Not greater than 100");
-        } 
+        }
     }
 }
