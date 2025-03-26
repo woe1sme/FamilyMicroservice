@@ -10,6 +10,7 @@ using Family.Infrastructure.Repositories.Implementations.EntityFramework;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,27 @@ builder.Services.AddScoped<IValidator<FamilyUpdateModel>, FamilyUpdateModelValid
 builder.Services.AddScoped<IValidator<FamilyMemberCreateModel>, FamilyMemberCreateModelValidator>();
 builder.Services.AddScoped<IValidator<FamilyMemberUpdateModel>, FamilyMemberUpdateModelValidator>();
 builder.Services.AddControllers();
+
+builder.Services.AddMassTransit(x => 
+{
+    x.UsingRabbitMq((context, cfg) => 
+    {
+        var configuration = context.GetRequiredService<IConfiguration>();
+
+        var host = Environment.GetEnvironmentVariable("RabbitMqHost") ?? configuration["RabbitMq:Host"];
+        var port = Environment.GetEnvironmentVariable("RabbitMqPort") ?? configuration["RabbitMq:Port"];
+        var username = Environment.GetEnvironmentVariable("RabbitMqUser") ?? configuration["RabbitMq:Username"];
+        var password = Environment.GetEnvironmentVariable("RabbitMqPassword") ?? configuration["RabbitMq:Password"];
+
+        cfg.Host($"{host}:{port}", h =>
+        {
+            h.Username(username);
+            h.Password(password);
+        });
+
+        cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
+    });
+});
 
 var app = builder.Build();
 

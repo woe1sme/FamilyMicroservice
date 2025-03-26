@@ -1,4 +1,16 @@
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+
   postgres:
     image: postgres:15-alpine
     container_name: postgres
@@ -7,7 +19,6 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=FamilyDb
     ports:
-#      - "5432:5432"
        - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -23,8 +34,11 @@ services:
       - postgres
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-#      - CONNECTION_STRING=Host=postgres;Port=5432;Database=FamilyDb;Username=postgres;Password=postgres
       - CONNECTION_STRING=Host=postgres;Port=5432;Database=FamilyDb;Username=postgres;Password=postgres
+      - RabbitMqHost=rabbitmq
+      - RabbitMqPort=5672
+      - RabbitMqUser=guest
+      - RabbitMqPassword=guest
     ports:
       - "8080:80"
     networks:

@@ -1,6 +1,9 @@
 ﻿using Family.Application.Abstractions;
 using Family.Application.Models.FamilyMember;
+using Family.Contracts.FamilyMember;
+using Family.Domain.Entities;
 using FluentValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,16 +17,19 @@ namespace Family.API.Controllers
         private readonly ILogger<FamilyMembersController> _logger;
         private readonly IValidator<FamilyMemberCreateModel> _familyMemberCreateModelValidator;
         private readonly IValidator<FamilyMemberUpdateModel> _familyMemberUpdateModelValidator;
+        private readonly IPublishEndpoint _familyPublishEndpoint;
 
         public FamilyMembersController(IFamilyMemberService familyMemberService,
                                       ILogger<FamilyMembersController> logger,
                                       IValidator<FamilyMemberCreateModel> familyMemberCreateModelValidator,
-                                      IValidator<FamilyMemberUpdateModel> familyMemberUpdateModelValidator) 
+                                      IValidator<FamilyMemberUpdateModel> familyMemberUpdateModelValidator,
+                                      IPublishEndpoint familyPublishEndpoint) 
         {
             _familyMemberService = familyMemberService;
             _logger = logger;
             _familyMemberCreateModelValidator = familyMemberCreateModelValidator;
             _familyMemberUpdateModelValidator = familyMemberUpdateModelValidator;
+            _familyPublishEndpoint = familyPublishEndpoint;
         }
 
         // POST api/families/{familyId}/members
@@ -50,8 +56,14 @@ namespace Family.API.Controllers
                     return StatusCode(StatusCodes.Status400BadRequest, $"An error occurred while processing your request. {validateResult}");
                 }
 
-                var result = await _familyMemberService.CreateMemberAsync(familyMemberCreateModel, familyId);
-                return CreatedAtAction(nameof(CreateFamilyMember),new {id = result.Id}, result);
+                var familyMember = await _familyMemberService.CreateMemberAsync(familyMemberCreateModel, familyId);
+
+                await _familyPublishEndpoint.Publish(new FamilyMemberCreated(familyMemberCreateModel.UserId,
+                                                                             familyMemberCreateModel.Name,
+                                                                             familyMemberCreateModel.Role,
+                                                                             familyId));
+
+                return CreatedAtAction(nameof(CreateFamilyMember),new {id = familyMember.Id}, familyMember);
             }
             catch (Exception ex) 
             {
@@ -85,8 +97,14 @@ namespace Family.API.Controllers
                     return StatusCode(StatusCodes.Status400BadRequest, $"An error occurred while processing your request. {validateResult}");
                 }
 
-                var result = await _familyMemberService.UpdateMemberAsync(familyMemberUpdateModel, familyMemberId);
-                return result == null ? NotFound() : Ok(result);
+                var updateMemberResult = await _familyMemberService.UpdateMemberAsync(familyMemberUpdateModel, familyMemberId);
+
+                await _familyPublishEndpoint.Publish(new FamilyMemberUpdated(updateMemberResult.UserId,
+                                                                             updateMemberResult.Name,
+                                                                             updateMemberResult.Role,
+                                                                             updateMemberResult.FamilyId));
+
+                return updateMemberResult == null ? NotFound() : Ok(updateMemberResult);
             }
             catch (Exception ex) 
             {
