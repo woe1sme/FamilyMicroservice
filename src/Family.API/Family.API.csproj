@@ -35,8 +35,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Family.Contracts\Family.Contracts.csproj" />
       <ProjectReference Include="..\Family.Application\Family.Application.csproj" />
+      <ProjectReference Include="..\Family.Contracts\Family.Contracts.csproj" />
       <ProjectReference Include="..\Family.Infastructure\EntityFramework\Family.Infrastructure.EntityFramework\Family.Infrastructure.EntityFramework.csproj" />
       <ProjectReference Include="..\Family.Infastructure\Repositories\Family.Infrastructure.Repositories.Implementations\Family.Infrastructure.Repositories.Implementations.csproj" />
     </ItemGroup>

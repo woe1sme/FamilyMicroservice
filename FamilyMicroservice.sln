@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "src\docker-compose\docker-compose.dcproj", "{612A160C-1F48-4BFC-8FEB-5B5C2A44B85C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family.Contracts", "Family.Contracts\Family.Contracts.csproj", "{991B274F-1A57-4300-91D3-E4B03398E2B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family.Contracts", "src\Family.Contracts\Family.Contracts.csproj", "{991B274F-1A57-4300-91D3-E4B03398E2B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
