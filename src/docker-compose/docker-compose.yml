@@ -3,13 +3,18 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+    - RabbitMqUser=guest
+    - RabbitMqPassword=guest
+    - RabbitMqVhost=/
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5673:5672"
+      - "15673:15672"
     networks:
       - app-network
+    healthcheck:
+        test: ["CMD", "rabbitmq-diagnostics", "ping"]
+        interval: 10s
+        retries: 5
 
   postgres:
     image: postgres:15-alpine
@@ -27,11 +32,13 @@ services:
 
   family.api:
     build:
-      context: ../
-      dockerfile: Family.API/Dockerfile
+      context: ../../
+      dockerfile: src/Family.API/Dockerfile
     container_name: family-api
     depends_on:
-      - postgres
+       rabbitmq:
+         condition: service_healthy
+
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - CONNECTION_STRING=Host=postgres;Port=5432;Database=FamilyDb;Username=postgres;Password=postgres
@@ -40,7 +47,7 @@ services:
       - RabbitMqUser=guest
       - RabbitMqPassword=guest
     ports:
-      - "8080:80"
+      - "8880:80"
     networks:
       - app-network
 
@@ -49,3 +56,4 @@ volumes:
 
 networks:
   app-network:
+    driver: bridge  

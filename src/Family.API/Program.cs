@@ -60,10 +60,11 @@ builder.Services.AddMassTransit(x =>
 
         var host = Environment.GetEnvironmentVariable("RabbitMqHost") ?? configuration["RabbitMq:Host"];
         var port = Environment.GetEnvironmentVariable("RabbitMqPort") ?? configuration["RabbitMq:Port"];
+        var vhost = Environment.GetEnvironmentVariable("RabbitMqVhost") ?? configuration["RabbitMq:Vhost"];
         var username = Environment.GetEnvironmentVariable("RabbitMqUser") ?? configuration["RabbitMq:Username"];
         var password = Environment.GetEnvironmentVariable("RabbitMqPassword") ?? configuration["RabbitMq:Password"];
 
-        cfg.Host($"{host}:{port}", h =>
+        cfg.Host(host, vhost, h =>
         {
             h.Username(username);
             h.Password(password);
@@ -75,12 +76,13 @@ builder.Services.AddMassTransit(x =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.Use(async (context, next) =>
 {
@@ -92,6 +94,8 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+app.UseRouting();
 app.MapControllers();
+
 app.Run();

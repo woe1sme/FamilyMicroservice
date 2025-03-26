@@ -5,7 +5,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
 EXPOSE 80
-
+USER root
+RUN apt-get update && apt-get install -y curl
+USER app
 
 # Этот этап используется для сборки проекта службы
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -14,8 +16,9 @@ WORKDIR /src
 COPY ["src/Family.API/Family.API.csproj", "src/Family.API/"]
 COPY ["src/Family.Application/Family.Application.csproj", "src/Family.Application/"]
 COPY ["src/Family.Domain/Family.Domain.csproj", "src/Family.Domain/"]
-COPY ["src/Family.Infastructure/EntityFramework/Family.Infrastructure.EntityFramework/Family.Infrastructure.EntityFramework.csproj", "src/Family.Infastructure/EntityFramework/Family.Infrastructure.EntityFramework/"]
 COPY ["src/Family.Infastructure/Repositories/Family.Infrastructure.Repositories.Implementations/Family.Infrastructure.Repositories.Implementations.csproj", "src/Family.Infastructure/Repositories/Family.Infrastructure.Repositories.Implementations/"]
+COPY ["src/Family.Infastructure/EntityFramework/Family.Infrastructure.EntityFramework/Family.Infrastructure.EntityFramework.csproj", "src/Family.Infastructure/EntityFramework/Family.Infrastructure.EntityFramework/"]
+
 RUN dotnet restore "./src/Family.API/Family.API.csproj"
 COPY . .
 WORKDIR "/src/src/Family.API"
