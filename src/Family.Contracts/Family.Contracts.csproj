@@ -6,4 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<PropertyGroup>
+		<PackageId>Family.Contracts.6db28074-25ea-405b-bbbc-2201930b334b</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>woe1sme</Authors>
+		<Description>Contracts for Family API</Description>
+		<Company>woe1sme</Company>
+	</PropertyGroup>
 </Project>

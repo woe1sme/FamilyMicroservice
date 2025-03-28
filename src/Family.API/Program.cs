@@ -69,7 +69,7 @@ builder.Services.AddMassTransit(x =>
             h.Username(username);
             h.Password(password);
         });
-
+        cfg.ConfigureEndpoints(context);
         cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
     });
 });

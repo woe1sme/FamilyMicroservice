@@ -10,4 +10,6 @@ public record FamilyUpdateModel : IUpdateModel
     {
         Name = familyName;
     }
+
+    public FamilyUpdateModel() { }
 }

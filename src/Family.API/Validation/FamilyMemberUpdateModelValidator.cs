@@ -12,7 +12,10 @@ namespace Family.API.Validation
     {
         public FamilyMemberUpdateModelValidator()
         {
-
+            RuleFor(x => x.Name).NotEmpty()
+                                .WithMessage("Specify name.")
+                                .Length(1, 100)
+                                .WithMessage("Not greater than 100");
         }
     }
 }

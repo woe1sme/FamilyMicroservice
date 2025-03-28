@@ -16,9 +16,9 @@ services:
         interval: 10s
         retries: 5
 
-  postgres:
+  family.postgres:
     image: postgres:15-alpine
-    container_name: postgres
+    container_name: family.postgres
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -26,30 +26,62 @@ services:
     ports:
        - "5433:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/family.postgresql/data
+    networks:
+      - app-network
+
+  wallet.postgres:
+    image: postgres:latest
+    container_name: wallet.postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: WalletDb
+      POSTGERS_CONNECTION: Host=wallet.postgres;Port=5434;Database=WalletDb;Username=postgres;Password=postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/wallet.postgresql/data
     networks:
       - app-network
 
   family.api:
     build:
-      context: ../../
-      dockerfile: src/Family.API/Dockerfile
-    container_name: family-api
+        context: ../../
+        dockerfile: src/Family.API/Dockerfile
+    container_name: family.api
     depends_on:
-       rabbitmq:
-         condition: service_healthy
-
+        rabbitmq:
+            condition: service_healthy
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - CONNECTION_STRING=Host=postgres;Port=5432;Database=FamilyDb;Username=postgres;Password=postgres
-      - RabbitMqHost=rabbitmq
-      - RabbitMqPort=5672
-      - RabbitMqUser=guest
-      - RabbitMqPassword=guest
+        - ASPNETCORE_ENVIRONMENT=Development
+        - CONNECTION_STRING=Host=family.postgres;Port=5432;Database=FamilyDb;Username=postgres;Password=postgres
+        - RabbitMqHost=rabbitmq
+        - RabbitMqPort=5672
+        - RabbitMqUser=guest
+        - RabbitMqPassword=guest
     ports:
-      - "8880:80"
+        - "8880:80"
     networks:
-      - app-network
+        - app-network
+
+  wallet.api:
+        image: wallet.api
+        container_name: wallet.api
+        build:
+          context: ../../../Wallet
+          dockerfile: Wallet.API/Dockerfile
+        environment: 
+        - CONNECTION_STRING=Host=wallet.postgres;Port=5432;Database=WalletDb;Username=postgres;Password=postgres
+        - ASPNETCORE_ENVIRONMENT=Development
+        ports:
+          - "8881:81"
+        depends_on:
+            rabbitmq:
+                condition: service_healthy 
+        networks:
+          - app-network
 
 volumes:
   pgdata:
