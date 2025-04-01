@@ -13,8 +13,9 @@ services:
       - app-network
     healthcheck:
         test: ["CMD", "rabbitmq-diagnostics", "ping"]
-        interval: 10s
+        interval: 30s
         retries: 5
+    restart: always
 
   family.postgres:
     image: postgres:15-alpine
@@ -26,7 +27,7 @@ services:
     ports:
        - "5433:5432"
     volumes:
-      - pgdata:/var/lib/family.postgresql/data
+      - family_pgdata:/var/lib/postgresql/data
     networks:
       - app-network
 
@@ -38,11 +39,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: WalletDb
-      POSTGERS_CONNECTION: Host=wallet.postgres;Port=5434;Database=WalletDb;Username=postgres;Password=postgres
+      POSTGRES_CONNECTION: Host=wallet.postgres;Port=5434;Database=WalletDb;Username=postgres;Password=postgres
     ports:
       - "5434:5432"
     volumes:
-      - pgdata:/var/lib/wallet.postgresql/data
+      - wallet_pgdata:/var/lib/postgresql/data
     networks:
       - app-network
 
@@ -78,13 +79,16 @@ services:
         ports:
           - "8881:81"
         depends_on:
-            rabbitmq:
-                condition: service_healthy 
+          rabbitmq:
+            condition: service_healthy
+          wallet.postgres:
+            condition: service_healthy 
         networks:
           - app-network
 
 volumes:
-  pgdata:
+  family_pgdata:
+  wallet_pgdata:
 
 networks:
   app-network:
