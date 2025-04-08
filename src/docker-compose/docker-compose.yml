@@ -19,7 +19,7 @@ services:
 
   family.postgres:
     image: postgres:15-alpine
-    container_name: family.postgres
+    container_name: postgres.family
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -28,22 +28,48 @@ services:
        - "5433:5432"
     volumes:
       - family_pgdata:/var/lib/postgresql/data
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres -d FamilyDb"]
+        interval: 30s
+        retries: 5
     networks:
       - app-network
 
   wallet.postgres:
-    image: postgres:latest
-    container_name: wallet.postgres
+    image: postgres:15-alpine
+    container_name: postgres.wallet
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: WalletDb
-      POSTGRES_CONNECTION: Host=wallet.postgres;Port=5434;Database=WalletDb;Username=postgres;Password=postgres
     ports:
       - "5434:5432"
     volumes:
       - wallet_pgdata:/var/lib/postgresql/data
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres -d WalletDb"]
+        interval: 30s
+        retries: 5
+    networks:
+      - app-network
+
+  expences.postgres:
+    image: postgres:15-alpine
+    container_name: postgres.expences
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ExpencesDb
+    ports:
+      - "5435:5432"
+    volumes:
+      - expences_pgdata:/var/lib/postgresql/data
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres -d ExpencesDb"]
+        interval: 30s
+        retries: 5
     networks:
       - app-network
 
@@ -51,7 +77,7 @@ services:
     build:
         context: ../../
         dockerfile: src/Family.API/Dockerfile
-    container_name: family.api
+    container_name: api.family
     depends_on:
         rabbitmq:
             condition: service_healthy
@@ -69,7 +95,7 @@ services:
 
   wallet.api:
         image: wallet.api
-        container_name: wallet.api
+        container_name: api.wallet
         build:
           context: ../../../Wallet
           dockerfile: Wallet.API/Dockerfile
@@ -85,10 +111,30 @@ services:
             condition: service_healthy 
         networks:
           - app-network
-
+   
+  expences.api:
+    image: expences.api
+    container_name: api.expences
+    build:
+        context: ../../../Expenses
+        dockerfile: Expenses.API/Dockerfile
+    environment: 
+        - ASPNETCORE_ENVIRONMENT=Development
+        - CONNECTION_STRING=Host=expences.postgres;Port=5432;Database=ExpencesDb;Username=postgres;Password=postgres
+    ports:
+        - "8882:82"
+    depends_on:
+        rabbitmq:
+            condition: service_healthy
+        expences.postgres:
+            condition: service_healthy 
+    networks:
+        - app-network
+        
 volumes:
   family_pgdata:
   wallet_pgdata:
+  expences_pgdata:
 
 networks:
   app-network:

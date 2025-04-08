@@ -1,11 +1,7 @@
 ﻿using Family.Application.Abstractions;
 using Family.Application.Models.Family;
-using Family.Contracts.Familly;
 using FluentValidation;
-using MassTransit;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 
 namespace Family.API.Controllers
 {
@@ -17,19 +13,16 @@ namespace Family.API.Controllers
         private readonly ILogger _logger;
         private readonly IValidator<FamilyAndFamilyHeadCreateModel> _familyAndFamilyHeadCreateModelValidator;
         private readonly IValidator<FamilyUpdateModel> _familyUpdateModelValidator;
-        private readonly IPublishEndpoint _familyPublishEndpoint;
 
         public FamiliesController(IFamilyService familyService,
                                 ILogger<FamiliesController> logger,
                                 IValidator<FamilyAndFamilyHeadCreateModel> familyAndFamilyHeadCreateModelValidator,
-                                IValidator<FamilyUpdateModel> familyUpdateModelValidator,
-                                IPublishEndpoint familyPublishEndpoint)
+                                IValidator<FamilyUpdateModel> familyUpdateModelValidator)
         {
             _familyService = familyService;
             _logger = logger;
             _familyAndFamilyHeadCreateModelValidator = familyAndFamilyHeadCreateModelValidator;
             _familyUpdateModelValidator = familyUpdateModelValidator;
-            _familyPublishEndpoint = familyPublishEndpoint;
         }
 
         // POST /api/families
@@ -56,10 +49,6 @@ namespace Family.API.Controllers
                 }
 
                 var family = await _familyService.CreateFamilyAsync(model);
-
-                await _familyPublishEndpoint.Publish(new FamilyCreated(family.Id,
-                                                                       family.FamilyName,
-                                                                       model.FamilyHeadUserId));
 
                 return CreatedAtAction(nameof(CreateFamily), new { id = family.Id }, family);
             }
@@ -95,9 +84,6 @@ namespace Family.API.Controllers
                 }
 
                 await _familyService.UpdateFamilyAsync(familyId, familyUpdateModel);
-
-                await _familyPublishEndpoint.Publish(new FamilyUpdated(familyId, familyUpdateModel.Name));
-
                 return NoContent();
             }
             catch (Exception ex)

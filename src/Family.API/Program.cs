@@ -29,7 +29,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
-builder.Logging.SetMinimumLevel(LogLevel.Information);
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 //automapper
 builder.Services.AddAutoMapper(typeof(FamilyMemberMapping), typeof(FamilyMapping));
@@ -44,6 +44,7 @@ builder.Services.AddScoped<IFamilyMemberRepository, EfFamilyMemberRepository>();
 builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 builder.Services.AddScoped<IFamilyService, FamilyService>();
 builder.Services.AddScoped<IFamilyMemberService, FamilyMemberService>();
+builder.Services.AddScoped<IPublishService, PublishService>();
 
 //controllers and validator
 builder.Services.AddScoped<IValidator<FamilyAndFamilyHeadCreateModel>, FamilyAndFamilyHeadCreateModelValidator>();

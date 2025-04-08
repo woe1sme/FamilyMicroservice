@@ -2,13 +2,14 @@ using AutoMapper;
 using Family.Application.Abstractions;
 using Family.Application.Exceptions;
 using Family.Application.Models.Family;
+using Family.Contracts.Familly;
 using Family.Domain.Entities;
 using Family.Domain.Repositories.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace Family.Application.Services;
 
-public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyService> logger) : IFamilyService
+public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyService> logger, IPublishService publishService) : IFamilyService
 {
     public async Task<FamilyModel> CreateFamilyAsync(FamilyAndFamilyHeadCreateModel familyAndFamilyHeadCreateModel)
     {
@@ -25,7 +26,9 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<Famil
 
             await unitOfWork.SaveChangesAsync();
             await unitOfWork.CommitTransactionAsync();
-            
+
+            await publishService.PublishAsync(message: new FamilyCreated(family.Id, family.FamilyName, familyHead.UserId));
+
             return mapper.Map<FamilyModel>(family);
         }
         catch (Exception ex)
@@ -67,7 +70,9 @@ public class FamilyService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<Famil
             await unitOfWork.FamilyRepository.UpdateAsync(family);
             await unitOfWork.SaveChangesAsync();
             await unitOfWork.CommitTransactionAsync();
-            
+
+            await publishService.PublishAsync(message: new FamilyUpdated(family.Id, family.FamilyName));
+
             return mapper.Map<FamilyModel>(family);
         }
         catch (Exception ex)

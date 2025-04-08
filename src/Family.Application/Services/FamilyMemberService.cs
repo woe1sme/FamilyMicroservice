@@ -1,8 +1,8 @@
 using AutoMapper;
 using Family.Application.Abstractions;
 using Family.Application.Exceptions;
-using Family.Application.Models.Base;
 using Family.Application.Models.FamilyMember;
+using Family.Contracts.FamilyMember;
 using Family.Domain.Entities;
 using Family.Domain.Entities.Enums;
 using Family.Domain.Repositories.Abstractions;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Family.Application.Services;
 
-public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyMemberService> logger) : IFamilyMemberService
+public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<FamilyMemberService> logger, IPublishService publishService) : IFamilyMemberService
 {
     public async Task<FamilyMemberModel> CreateMemberAsync(FamilyMemberCreateModel familyMemberCreateModel, Guid familyId)
     {
@@ -32,6 +32,12 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
             await unitOfWork.FamilyMemberRepository.AddAsync(mappedFamilyMember);
             await unitOfWork.SaveChangesAsync();
             await unitOfWork.CommitTransactionAsync();
+
+            await publishService.PublishAsync(message: new FamilyMemberCreated(
+                familyMemberCreateModel.UserId,
+                familyMemberCreateModel.Name,
+                familyMemberCreateModel.Role,
+                familyId));
 
             return mapper.Map<FamilyMemberModel>(mappedFamilyMember);
         }
@@ -110,7 +116,13 @@ public class FamilyMemberService(IUnitOfWork unitOfWork, IMapper mapper, ILogger
             
             await unitOfWork.SaveChangesAsync();
             await unitOfWork.CommitTransactionAsync();
-            
+
+            await publishService.PublishAsync(message: new FamilyMemberUpdated(
+                familyMember.UserId,
+                familyMember.Name,
+                familyMember.Role.ToString(),
+                familyMember.FamilyId ));
+
             return mapper.Map<FamilyMemberModel>(updatedFamilyMember);
         }
         catch (Exception ex)
